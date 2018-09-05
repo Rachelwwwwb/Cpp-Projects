@@ -1,5 +1,5 @@
 # CS 104 Student Repository
 
-- **Name**: Tommy Trojan
-- **USC ID**: 1234567890
-- **Email**: ttrojan@usc.edu
+- **Name**: Wenbei Wang
+- **USC ID**: 3692163617
+- **Email**: wenbeiwa@usc.edu
