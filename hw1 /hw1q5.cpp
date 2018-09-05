@@ -7,7 +7,7 @@ using namespace std;
 int main (int argc, char* argv[]){
 
 if (argc < 2) {
-    cout << "File name!" <<endl;
+    cout << "File name!!!" <<endl;
     return -1;
 }
 

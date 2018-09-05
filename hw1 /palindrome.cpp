@@ -25,7 +25,7 @@ bool helper (stringstream &input, int len)
 
 	bool val = helper(input, len-2);
 
-	//make your changes only below this line.
+	//make your changes only below this.
 	char last;
 	input >> last;
 	if (last != prev) return false;
