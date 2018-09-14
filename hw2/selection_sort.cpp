@@ -6,6 +6,7 @@ Item* findMin(Item * head){
     if (head == NULL) return nullptr;
 
     Item*returnavl = head;
+    //loop until hits the last one
     while (head->next!=nullptr){
         if (returnavl->getValue() > head->next->getValue()){
             returnavl = head->next;
@@ -22,8 +23,9 @@ Item* LLSelectionSort(Item * head){
     Item*returnval = head;
     while (tmp->next != NULL){
     Item*min = findMin(tmp);
+    //if the min is the first one, then nothing to do
     if(min == tmp){}
-
+    //if the min is the last one in the list
     else if(min->next == NULL){
         if(tmp->prev!=NULL){
             tmp->prev->next = min;
@@ -49,7 +51,6 @@ Item* LLSelectionSort(Item * head){
     tmp = tmp->next;
     }
     return returnval;
-  //  return LLSelectionSort(head->next);
 
 
 

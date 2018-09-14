@@ -10,7 +10,8 @@ void simulateDDGRound(GameData * gameData, ostream & output){
     size_t size = gameData->playerList.size();
     size_t m = rand()% (4* size);
     size_t gooseNo = 0;
-
+    
+    //find the goose
     for (unsigned int i = 0; i <= m; i++){
         if (i < m)
         output << gameData->playerList.get(i)<< " is a Duck."<<endl;
@@ -18,13 +19,15 @@ void simulateDDGRound(GameData * gameData, ostream & output){
         {output << gameData->playerList.get(i)<< " is a Goose!"<<endl;
         gooseNo = i;}
     }
-    //Item* goose ()
+    //random number for goose and it
+    //loop until the numbers are not the same
     int gooseNum = 0;
     int itNum = 0;
     while (itNum == gooseNum){
         gooseNum = rand()%49+1;
         itNum = rand()%49+1;
     }
+    //to compare the number
     if (itNum > gooseNum){
         output << gameData->itPlayerID << " took "<< gameData->playerList.get(gooseNo) <<"'s spot!"<<endl;
         //the goose become the new it
@@ -34,9 +37,8 @@ void simulateDDGRound(GameData * gameData, ostream & output){
     }
     else if (gooseNum > itNum){
         output << gameData->itPlayerID <<" is out!"<<endl;  
-        //does count including the it? if not, no need to remove anything here
-        //count-- when someone become the it
-        if (gameData->playerList.size() == 1){//is it the only condition that the goose wins?
+        
+        if (gameData->playerList.size() == 1){
             output << "Winner is "<< gameData->playerList.get(gooseNo)<< "!"<<endl;
             gameData->winnerID = gameData->playerList.get(gooseNo);
             return;
@@ -48,8 +50,6 @@ void simulateDDGRound(GameData * gameData, ostream & output){
             }
             gameData->itPlayerID = gameData->playerList.get(newItNo);
             gameData->playerList.remove(newItNo); 
-            //think about it more carefully
-            //something's not right  here
 
         }
 
@@ -72,12 +72,13 @@ int main(int argc, char* argv[]){
     int totalNum = 0; //the number of player including "it"
     unsigned int id;
     GameData game;
+    //read in all the daata
     ifile >> randomSeed >> totalNum >> game.itPlayerID;
    
 
     for (int i = 0; i < totalNum-1; i++){
         ifile >> id;
-
+    //push back the ids
         if(!ifile.fail()){
         game.playerList.push_back(id);}
     }
@@ -86,6 +87,7 @@ int main(int argc, char* argv[]){
 while (game.winnerID == 0){
     simulateDDGRound (&game, ofile);
     }
+    //the it id need to be 0 when the game ends
     game.itPlayerID = 0;
     
     cout<<game.playerList.size()<<endl;

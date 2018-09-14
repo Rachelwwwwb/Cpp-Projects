@@ -22,11 +22,10 @@
         if (count == 0) return 0; 
                 //return if invalid index input
         if (index < 0) return 0;     
-                //wrap around  
         size_t num = size();
         Item*tmp = head;
         int returnval = head->value;
-
+                //wrap around  
         index = index%num;
         for (size_t a = 0; a < index; a++){
             returnval = tmp->next->value;
@@ -36,6 +35,7 @@
     }
     
     //not including the it
+    //get the size of the list
 	size_t CircularListInt::size() const{
         if (head == NULL) return 0;
         size_t retval = 1;
@@ -46,6 +46,7 @@
         return retval;
         }
 
+    //whether the list is empty
 	bool CircularListInt::empty() const{
         if (head == NULL) return true;
     else return false;}
@@ -54,11 +55,13 @@
         count++;
         Item* toAdd = new Item;
         toAdd->value = value;
+        //if the list is empty
         if(head == nullptr){
             head = toAdd;
             head->next = head;
             head->prev = head;
             return;}
+        //if only the head is in the list
         if(head->next == head){
             head->prev = toAdd;
             head->next = toAdd;

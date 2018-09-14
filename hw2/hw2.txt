@@ -71,6 +71,11 @@ as key and the reviews as values.
 
 Problem 4:
 The program reverses the whole linked list.
+It will find the last element (the element which next is NULL),
+and takes that as the "out" of each funcA. Then it uses funcB
+to reverse the linked relations. The whole linked list after
+would be 5->4->3->2->1->NULL. It returns the head the address
+of Node 5. Please see the recursion.jpg for detailed explanation. 
 
 
 
