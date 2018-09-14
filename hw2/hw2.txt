@@ -1,0 +1,77 @@
+Wenbei Wang
+wenbeiwa@usc.edu
+USCID: 3692163617
+CS104 Hw2
+
+Problem 1:
+
+Part (a): README.md: Tracked and Unmodified
+
+Part (b): README.md: Modified
+          fun_problem.txt: Untracked
+
+Part (c): README.md: Staged
+          fun_problem.txt: Staged
+
+Part (d): README.md: Modified
+          fun_problem.txt: Modified       
+
+
+Part (e): README.md: Staged
+          fun_problem.txt: Unmodified   
+
+There's nothing in fun_problem.txt, because 
+"git checkout -- <file>..." is used to discard changes 
+in working directory     
+
+
+Part (f): README.md: Both Staged and Unstaged
+It is staged when I run the git add command. After I modified it, the file 
+is unstaged again and I have to git add it again. If I commit 
+now, it will be the last version.
+
+
+Problem 3:
+1. a data type that stores voting statistics for each zip code, 
+and allows for speedy access of these statistics when given a zip code.
+
+Map:
+Key = each zip code
+value = votes
+The votes need not to be sorted. Each zip code is unique, so does the key.
+The map can be accessed by keys.
+
+2. a data type that stores all of the students that solved a 
+chocolate problem in CSCI 104.
+
+List:
+A set consisting of student's names
+Sets are unordered and can be accessed based on the key value (students' names)
+
+
+3. a data type that stores all of the collectible pokemon in Pokemon Go, 
+ordered by their pokedex index (an integer from 1 to 151)
+
+List:
+A list which consisting strings of the name of the pokemon.
+A list is ordered and can be accessed based on the position easily. 
+
+4. a data type for the database of the website rottentomatoes: 
+given a movie name and the year it was released, it brings up
+ all of the reviews associated with that movie.
+
+ Map: 
+Usually a map has only one key, value pair. In this case, as there
+are two pairs of relations (name and the year, name and reviews), we 
+can either pair the value with a struct containing the name and
+the year, or create two maps: one with the year of published be the key
+and the name of the movie be the value, while the other has the name
+as key and the reviews as values. 
+
+
+Problem 4:
+The program reverses the whole linked list.
+
+
+
+
