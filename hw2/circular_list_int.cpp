@@ -6,10 +6,14 @@
     }
 
     CircularListInt::~CircularListInt(){
-        for (size_t i = 0; i < count; i++){
-            remove(i);
+        
+        Item* tmp = head;
+        for(size_t i = 0; i < count; i++){
+            tmp = head->next;
+            delete head;
+            head = tmp;
         }
-
+        count = 0;
     }
     
 
@@ -111,6 +115,7 @@
         toRemove->prev->next = toRemove->next;
         toRemove->next->prev = toRemove->prev;
         }
+        //toRemove = nullptr;
         delete toRemove;
         count--;
     }
