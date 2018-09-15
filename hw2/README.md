@@ -5,6 +5,7 @@ CSCI 104
 
 For the homework 2, we reviewed the linked-list and recursion, and 
 apply them into a small game: Duck Duck Goose.
+
 The first program aims to build a selection sort, which is
 an effective way to sort the linked list. While sounds easy,
 I met several problems on the cornor cases while writing.
@@ -25,5 +26,8 @@ straight forward, as well as useful (as we can play it).
 Besides, I learned more about the make file and test code in
 this homework assignment. Some day when I have to write them
 myself, I can refer to them again. 
+
+P.S. I submit one more file called recursion.jpg to show detailed
+explanation of the problem 4. Please check that. 
 
 
