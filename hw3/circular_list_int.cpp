@@ -10,6 +10,7 @@
         if(head == NULL) return;
         Item* tmp = head;
         for(size_t i = 0; i < count; i++){
+            //some problem with the count here
             tmp = head->next;
             delete head;
             head = tmp;
@@ -20,7 +21,7 @@
 
     int CircularListInt::get(size_t index) const{
                 //return 0 if nothing inside
-        if (count == 0) return -999; 
+        if (head == NULL || tail == NULL) return -999; 
                 //return if invalid index input
         else if (index < 0) return -999;
                 //if getting the value of head
@@ -99,6 +100,7 @@
 	// List elements after the removed element are pulled forward, so their indicies decrease by one.
 	// If an index is passed that is larger then the number of items in the list, it should "wrap around" back to the first element.
 	void CircularListInt::remove(size_t index){
+        
         if (head == nullptr || index < 0 ) {return;}
         //wrap around
         if(index >= count && count !=0){
@@ -117,6 +119,7 @@
         tail = toRemove->prev;
     }
         delete toRemove;
+        count--;
         return;
         }
 

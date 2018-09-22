@@ -5,6 +5,10 @@
 #include <string>
 
 using namespace std;
+
+
+int arithmeticParser(const string& line){
+
 const int OPEN_PAREN = -1;
 const int CLOSE_PAREN = -2;
 const int PLUS = -3;
@@ -13,15 +17,12 @@ const int SHIFTLEFT = -5;
 const int SHIFTRIGHT = -6;
 const int SPACE = -7;
 
-
-int arithmeticParser(const string& line){
      StackInt stk;
     //convert any operator in the string into int
     int numAry[line.size()];
     //cerr << line.size()<<endl;
         for (size_t i = 0; i < line.size();i++){
-            //if can't numAry.size
-            //then change it back to line.size()
+
             if(line[i] == '('){
                 numAry[i] = OPEN_PAREN;
             }
@@ -40,10 +41,14 @@ int arithmeticParser(const string& line){
             else if(line[i] == '>'){
                 numAry[i] = SHIFTRIGHT;
             }
+            else if (line[i] == ' '){
+                numAry[i] = SPACE;
+            }
             else{
                 //if there's other character in the line like &{[
                 //what if there's a space between those stuffs
                 if(line[i] < '0' || line[i] > '9'){
+                    //cerr <<"why are you here???"<<endl;
                     return -999;
                 }
                 numAry[i] = int(line[i]-'0');
@@ -55,6 +60,7 @@ int arithmeticParser(const string& line){
 
     for (size_t i = 0; i < line.size();i++){
          
+           // cerr << "i: "<<i<<endl;
          //when meet operators
          if (numAry[i] == OPEN_PAREN || numAry[i] == PLUS ||numAry[i] == MULTIPLY){   
              stk.push(numAry[i]);
@@ -64,13 +70,14 @@ int arithmeticParser(const string& line){
          else if (numAry[i] == SHIFTLEFT || numAry[i] == SHIFTRIGHT){
             //all the numbers are now in char
             //i need to transfer them into int in the first place
-            int j = i+1;
+            size_t j = i+1;
             bool isTrue = true;
+            bool shiftSolved = true;
             while(isTrue){
-                //if it is end of the string
+                //if j has reached end of the string and still cannot find a number
                 //then return false directly
-                if(i == line.size()-1){
-                    return -1;
+                if(j-1 == line.size()-1){
+                    return -999;
                 }
                 //if it encounters a number
                 //find the position of the first digit
@@ -81,15 +88,24 @@ int arithmeticParser(const string& line){
                 else if (numAry[j] == SHIFTLEFT || numAry[j] == SHIFTRIGHT){
                     isTrue = true;
                 }
+
+                else if (numAry[j] == OPEN_PAREN){
+                    shiftSolved = false;
+                }
+                else if (numAry[j] == SPACE){
+                    //nothing need to do
+                }
                 else{
                     //when </> is not followed by a number/</>
                     //return false
-                    return -1;
+                    return -999;
                 }
                 j++;
             }
             //o represents the position of the last digit
             j--;
+            //if there's a number immediately after the shifts
+            if(shiftSolved){
             int o = j;
             string strNum = "";
             strNum += char(numAry[o]) + '0'; //might have problem here
@@ -114,6 +130,12 @@ int arithmeticParser(const string& line){
         
             stk.push(pushValue);
             i = o;
+            }
+            else{
+                for (i = i; i <= j; i++){
+                stk.push(numAry[i]);}
+                i--;
+            }
          }
 
         //when meeting numbers
@@ -123,10 +145,12 @@ int arithmeticParser(const string& line){
             //add the number to the string
             strNum += char(numAry[i]) + '0';
             
-            for (size_t count = i;count < line.size(); count++){
-                if(numAry[count+1] >= 0){
-                strNum += char(numAry[count+1]) + '0';
-                i = count;}
+            for ( i = i;i < line.size(); i++){
+                if(i == line.size()-1){
+                    break;
+                }
+                else if(numAry[i+1] >= 0){
+                strNum += char(numAry[i+1]) + '0';}
                 else{
                     break;
                 }
@@ -134,6 +158,11 @@ int arithmeticParser(const string& line){
             
             pushVal = stoi(strNum);
             stk.push(pushVal);
+        }
+        
+        //when meeting a space
+        else if (numAry[i] == SPACE){
+            //as if nothing happened
         }
 
         //when meeting close paren
@@ -172,7 +201,8 @@ int arithmeticParser(const string& line){
                 if(ary_num%2 == 0){
                     if(stk_ary[ary_num] < 0) {return -999;}
                     else {
-                        if (first == -888) first = stk_ary[ary_num];
+                        if (first == -888) {
+                            first = stk_ary[ary_num];}
                         else if (next == -888) {
                             next = stk_ary[ary_num];
                             if (oprt == -888){return -999;}
@@ -204,7 +234,9 @@ int arithmeticParser(const string& line){
             }
 
             //add more restriction maybe
-            stk.push(first);
+            if(next == -888 && oprt == -888){
+            stk.push(first);}
+            else{return -999;}
      }
 
     }
@@ -214,14 +246,18 @@ int arithmeticParser(const string& line){
 
      int retval = -999;
      if(stk.top() < 0){
-         return false;}
+         return -999;}
     else{
         retval = stk.top();
         stk.pop();
-        if(stk.empty()){
+
+        while(!stk.empty()){
+        if(stk.top() == SHIFTRIGHT || stk.top()==SHIFTLEFT){
+            if (stk.top() == SHIFTRIGHT){ retval = retval/2; stk.pop();}
+            if (stk.top() == SHIFTLEFT){ retval = retval*2; stk.pop();}
         }
-        else{
-            return -999;
+        else {
+            return -999;}
         }
     }
 
