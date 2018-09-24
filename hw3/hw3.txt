@@ -51,3 +51,41 @@ in O(1). So the total runtime will be n*n + n*1 = n^2 + n, which is O(n^2).
 
 Problem 3:
 Part (a): 
+For the worst case, if(A[i] == 0) will always run.
+The inner for loop has the runtime of Θ(log(n))
+The outer for loop has the runtime of Θ(n)
+So the total runtime = sigma(x=0 to n) log(n) = n*log(n), which is Θ(nlog(n)).
+
+Part (b):
+tally++ takes Θ(1).
+for (int k = 1; k < n; k*=2 ) takes Θ(log(n)) time. 
+So the inner for loop takes Θ(log(n)) time.
+
+for (int j = i; j < n; j++){
+	if (j % i == 0)
+}
+This will happen for n/i times with different i.
+The outer for loop for (int i = 0; i < n; i++) will takes Θ(n) times.
+So the total runtime would be sigma(x=0 to n) ((n/x)*Θ(log(n)))
+= Θ(log(n)) * n * sigma(x=0 to n) (1/x) = log(n) * n * log(n) 
+= Θ (n*(log(n))^2)
+
+Part (c):
+int*a = new int [10];
+int size = 10;
+these two lines take constant time. 
+In the outer for loop, if(i == size) will execute n/10 times, when i == 10, 20, 30 , etc..
+So inside the if condition, it will loop for 10 times, 20 times, 30 times, etc.
+So the if statement will take the runtime of sigma(x=0 to n/10)(10x) times, 
+which is (n^2+10n)/20, Θ(n^2).
+For n-n/10 = 9n/10 times, the line a[i] = sqrt(i) will execute, which takes
+constant times. So the bottom part will take Θ(n) times.
+So the total runtime will be Θ(n^2).
+
+Part (d):
+The size starts at 10, and times 2 when it get to size, until n. So for log(n/10) times,
+the if statement will run, while other (n-log(n/10)) times, the Θ(1) operation will run. 
+(a[i] = sqrt(i);) Inside the for loop, it will run Θ(size) + several Θ(1) each time.
+So the total runtime for the if statement would be sigma(i=0 to log(n) 10*2^n) = 10* 
+((2*(logn+1)/(2-1))) = 10*Θ(2^log(n)) = 10*Θ(n) = Θ(n)
+The total runtime would be Θ(n) + Θ(n-log(n/10)*Θ(1)) = Θ(n). 

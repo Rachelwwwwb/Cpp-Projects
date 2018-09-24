@@ -10,7 +10,6 @@
         if(head == NULL) return;
         Item* tmp = head;
         for(size_t i = 0; i < count; i++){
-            //some problem with the count here
             tmp = head->next;
             delete head;
             head = tmp;
@@ -136,7 +135,6 @@
             else{
             toRemove->prev->next = toRemove->next;
             toRemove->next->prev = toRemove->prev;
-          //  delete head;
             head = toRemove->next;
             }
         }
@@ -147,7 +145,6 @@
             tail = toRemove->prev;
         }
         }
-        //toRemove = nullptr;
         delete toRemove;
         count--;
     }

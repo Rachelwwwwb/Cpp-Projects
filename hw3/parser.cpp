@@ -20,7 +20,7 @@ const int SPACE = -7;
      StackInt stk;
     //convert any operator in the string into int
     int numAry[line.size()];
-    //cerr << line.size()<<endl;
+
         for (size_t i = 0; i < line.size();i++){
 
             if(line[i] == '('){
@@ -41,14 +41,12 @@ const int SPACE = -7;
             else if(line[i] == '>'){
                 numAry[i] = SHIFTRIGHT;
             }
-            else if (line[i] == ' '){
+            else if (line[i] == ' '||line[i] == '\t'){
                 numAry[i] = SPACE;
             }
             else{
                 //if there's other character in the line like &{[
-                //what if there's a space between those stuffs
                 if(line[i] < '0' || line[i] > '9'){
-                    //cerr <<"why are you here???"<<endl;
                     return -999;
                 }
                 numAry[i] = int(line[i]-'0');
@@ -60,7 +58,6 @@ const int SPACE = -7;
 
     for (size_t i = 0; i < line.size();i++){
          
-           // cerr << "i: "<<i<<endl;
          //when meet operators
          if (numAry[i] == OPEN_PAREN || numAry[i] == PLUS ||numAry[i] == MULTIPLY){   
              stk.push(numAry[i]);
@@ -90,6 +87,7 @@ const int SPACE = -7;
                 }
 
                 else if (numAry[j] == OPEN_PAREN){
+                    isTrue = false;
                     shiftSolved = false;
                 }
                 else if (numAry[j] == SPACE){
@@ -97,7 +95,6 @@ const int SPACE = -7;
                 }
                 else{
                     //when </> is not followed by a number/</>
-                    //return false
                     return -999;
                 }
                 j++;
@@ -106,20 +103,22 @@ const int SPACE = -7;
             j--;
             //if there's a number immediately after the shifts
             if(shiftSolved){
-            int o = j;
+            size_t o = j;
             string strNum = "";
-            strNum += char(numAry[o]) + '0'; //might have problem here
-            //try to nest it into the string
+            strNum += char(numAry[o]) + '0'; 
             int pushValue;
-            while (numAry[o+1] >= 0){
+            while(o+1 < line.size() ){
+            if (numAry[o+1] >= 0){
                 //transfer it into a complete number
                 strNum += char(numAry[o+1]) + '0';
                 o++;
             }
+            else break;
+            }
             //the value that is gonna push into the stack
             pushValue = stoi(strNum);
 
-            for (size_t count = j-1; count >= i; count--){
+            for (int count = (int)j-1; count >= (int)i; count--){
                 if(numAry[count] == SHIFTLEFT){
                     pushValue *= 2; 
                 }
@@ -162,14 +161,14 @@ const int SPACE = -7;
         
         //when meeting a space
         else if (numAry[i] == SPACE){
-            //as if nothing happened
+            //nothing happened
         }
 
         //when meeting close paren
         else if (numAry[i] == CLOSE_PAREN){
            if(stk.empty()){return -999;}
 
-           int stk_ary [100];//better solution?????????????
+           int stk_ary [65535];
            int count = 0;
            bool openParen = false;
            while(!stk.empty()){
@@ -188,14 +187,14 @@ const int SPACE = -7;
 
             //if no open_paren at the end
             if(!openParen) {return -999;}
-            //not sure about this
-            //check more test cases
+            
 
             //cases like (3) / (<3)
             if(count < 3){return -999;}
             int first = -888;
             int next = -888;
             int oprt = -888;
+            int consOpt = -888;
             //something like (+) or (*<) || ((12+12)(123+1))
             for (int ary_num = 0; ary_num < count; ary_num++){
                 if(ary_num%2 == 0){
@@ -219,7 +218,7 @@ const int SPACE = -7;
                             }
                         
                         }
-                        else {return -999;}//not really understand what i'm doing here
+                        else {return -999;}
                     }
 
                 }
@@ -227,13 +226,18 @@ const int SPACE = -7;
                 else if(ary_num%2 == 1){
                     if(stk_ary[ary_num] >= 0) {return -999;}
                     else if (stk_ary[ary_num] == PLUS || stk_ary[ary_num] == MULTIPLY){
+                        if(consOpt == -888){
                         oprt = stk_ary[ary_num];
+                        consOpt = oprt;}
+                        else{
+                            oprt = stk_ary[ary_num];
+                            if(oprt!=consOpt) return -999;
+                        }
                     }
                     else {return -999;}
                 }
             }
 
-            //add more restriction maybe
             if(next == -888 && oprt == -888){
             stk.push(first);}
             else{return -999;}
@@ -245,7 +249,8 @@ const int SPACE = -7;
 
 
      int retval = -999;
-     if(stk.top() < 0){
+    
+      if(stk.top() < 0){
          return -999;}
     else{
         retval = stk.top();
@@ -261,8 +266,6 @@ const int SPACE = -7;
         }
     }
 
-   // cerr << "noway: ";
-   // cerr << retval<<endl;
     return retval;
 }
 
@@ -279,15 +282,21 @@ int main(int argc, char* argv[]){
     if (ifile.fail()){
         return -1;
     }
-    char line[100];
-    ifile.getline(line, 100);
+    char line[65535];
+    ifile.getline(line, 65535);
     while(!ifile.fail()){
         string str(line);
+        bool isFull = true;
         //start the stack stuff for one line
-        if(str != ""){
+        for (size_t i = 0; i < str.size(); i++){
+            if(str[i]!=' '&& str[i]!='\t'){
+                isFull = false;
+                break;
+            }
+        }
+        if(!isFull){
        int result = 0;
        result = arithmeticParser(str);
-     //  cerr << "RESULT!!: "<<result<<endl;
        if (result < 0){
            cout<< "Malformed"<<endl;
        }
@@ -296,7 +305,7 @@ int main(int argc, char* argv[]){
        }
     }
    //start of the next line 
-    ifile.getline(line, 100);}
+    ifile.getline(line, 65535);}
     
    
 return 0;}
