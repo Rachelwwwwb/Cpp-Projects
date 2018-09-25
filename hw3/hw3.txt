@@ -16,38 +16,39 @@ dequeue: 	Since Stack 2 is empty, pop from stack 1
 			Stack2.push(2)
 			Stack1.pop()
 			Stack2.push(1)
+			Stack2.pop()
 
 			Stack 1: empty
-			Stack 2: 2 1
+			Stack 2: 2 
 
 enqueue 3: 	Stack 1: 3
-			Stack 2: 2 1
+			Stack 2: 2 
 
 enqueue 4:  Stack 1: 3 4
-			Stack 2: 2 1
+			Stack 2: 2 
 
 dequeue:	Since Stack 2 is not empty, pop from it
 			Stack 1: 3 4
-			Stack 2: 1
+			Stack 2: 
 
 enqueue 5:  Stack 1: 3 4 5
-			Stack 2: 1
+			Stack 2: 
 
 enqueue 6:	Stack 1: 3 4 5 6
-			Stack 2: 1
+			Stack 2: 
 
 Part (b):
-Runtime for enqueue(x) is always constant, as it will always add a new element at
+Runtime for enqueue(x) is always constant Θ(1), as it will always add a new element at
 the end of the Stack 1, and since we don't allocate memory for stack, stack 1 will
 never full.
 For dequeue, the worst runtime would be 2n (n is the number of element in stack 1).
 When stack 2 is empty, it will pop everything in stack 1 (n) and push everything 
-into stack 2 (n), which lead to the runtime of 2n. 
+into stack 2 (n), which lead to the runtime of 2n = Θ(n).
 
 Part (c):
 Enqueue(x) will still take constant time.
 For the dequeue function, it will pop n elements in O(n), and then push n elements
-in O(1). So the total runtime will be n*n + n*1 = n^2 + n, which is O(n^2).
+in O(1). So the total runtime will be n*n + n*1 = n^2 + n, which is Θ(n^2).
 
 Problem 3:
 Part (a): 
@@ -69,6 +70,10 @@ The outer for loop for (int i = 0; i < n; i++) will takes Θ(n) times.
 So the total runtime would be sigma(x=0 to n) ((n/x)*Θ(log(n)))
 = Θ(log(n)) * n * sigma(x=0 to n) (1/x) = log(n) * n * log(n) 
 = Θ (n*(log(n))^2)
+
+If the if-condition always fails, the outer two for loop will take in total Θ(n^2) times.
+There are some Θ(1) operations that we are missing during the calculation.
+So the total runtime would be Θ(n^2).
 
 Part (c):
 int*a = new int [10];
