@@ -4,14 +4,8 @@
 #include "Player.h"
 #include "Bag.h"
 #include "Dictionary.h"
+#include "Move.h"
 
-	/* Parses the given move m, and constructs the corresponding move subclass.
-	   m is assumed to be in the format described on the assignment sheet for a move command.
-	   The player passed in is used to verify that the proposed tiles are
-	   in fact in the player's hand.
-	   It can handle all three types of move (PASS, EXCHANGE, PLACE).
-	   Coordinates start with 1.
-	*/
 
 	static Move * Move::parseMove(std::string moveString, Player &p){
 		_player = p;
@@ -113,7 +107,7 @@
 			//put the tiles back in
 			std::vector<Tile*> toPutBack = _player.takeTiles(_tileString,false);
 			bag.addTiles(toPutBack);
-			std::vector<Tile*> toAdd = bag.(drawTiles((size_t)_tileString.size()));
+			std::vector<Tile*> toAdd = bag.drawTiles((size_t)_tileString.size());
 			_player.addTiles(toAdd);
 		}
 

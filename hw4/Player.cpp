@@ -5,13 +5,15 @@
 #include "Tile.h"
 #include "Player.h"
 
+using namespace std;
+
 
 	/* Constructor giving the player the given name, and setting their points to 0.
 	   Does not give the player any tiles.
 	*/
 	Player::Player (std::string const & name, size_t maxTiles){
     _name = name;
-	_maxTiles = maxTiles;
+	//_maxTiles = maxTiles;
 	_score = 0;
     }
 
@@ -28,7 +30,7 @@
 	std::set<Tile*> Player::getHandTiles() const{
         std::set<Tile*> handTiles;
         for (size_t i = 0; i < _tilesOnHand.size();i++){
-            handTiles.insert(handTiles.at(i));
+            handTiles.insert(_tilesOnHand[i]);
         }
     return handTiles;
     }
@@ -51,68 +53,85 @@
 		//set '?' if it has one (use useAs(char))
 	//if false, then the string is the letters need to be exchanged
 	//if all goes good, push them to the vector ready to move
-	bool hasTiles(std::string const & move, bool resolveBlanks) const{
+	bool Player::hasTiles(std::string const & move, bool resolveBlanks) const{
 	
         bool hasLetter = false;
-        for (size_t i = 0; i < move.size();i++){
+		//create a copy of move
+		string movecpy;
+        for (size_t i = 0; i < movecpy.size();i++){
 
+				//if it is a '?'
 				//when there's a '?' and the move is place
-				if(resolveBlanks && move[i] == '?'){
-				if (i+1 >= move.size()) return false;
-				else if(move[i+1] == '?') return false;
+				if(resolveBlanks && movecpy[i] == '?'){
+				if (i+1 >= movecpy.size()) return false;
+				else if(movecpy[i+1] == '?') return false;
 				else{ // take away the letter behind it
 					std::string firsthalf, secondhalf;
-					char actualUse = move [i+1];
-					firsthalf = move.substr(0,(int)i+1);
-					secondhalf = move.substr((int)i+3, move.size()-(int)i-2);
-					move = firsthalf + secondhalf;
+					firsthalf = movecpy.substr(0,(int)i+1);
+					secondhalf = movecpy.substr((int)i+3, movecpy.size()-(int)i-2);
+					movecpy = firsthalf + secondhalf;
 				}
-			}
+				}
 
             size_t j = 0;
-            while (!hasLetter && j < _tilesOnHand.size())){
-                if(move[i] == _tilesOnHand.at(j)->getLetter()){
-                    hasLetter = true;
-					if(resolveBlanks && move[i] == '?'){
-						_tilesOnHand[j]->useAs(actualUse);
-					}
-					//push it to the toMOve and delete the tile
-					_toMove.push_back(_tilesOnHand.at(j));
-					delete _tilesOnHand.at(i);//may have some problems
-					_tilesOnHand.erase(j). 
+            while (!hasLetter && j < _tilesOnHand.size()){
+                if(movecpy[i] == _tilesOnHand.at(j)->getLetter()){
+                    hasLetter = true; 
                 }
-                else if(j = _tilesOnHand.size()-1 && move[i]!= _tilesOnHand.at(j)->getLetter()){
+                else if (j == _tilesOnHand.size()-1 && movecpy[i]!= _tilesOnHand.at(j)->getLetter()){
                     return false;
                 }
                 j++;
             }
 		
-		return true;
         }
+	return true;
         
     }
 
 
-	/* Reads a move string, finds the corresponding tiles in the player's hand, and
-	   removes and returns those tiles in the order they appear in the move string.
 
-	   The move string is case-insensitive.
+	std::vector<Tile*> Player::takeTiles (std::string const & move, bool resolveBlanks){
+		
+		for (size_t i = 0; i < move.size();i++){
 
-	   The boolean resolveBlanks states whether this is a PLACE or EXCHANGE move.
-	   If resolveBlanks is true, then when the string contains a '?',
-	   the next letter is interpreted as the letter to use the blank as,
-	   and the "use" field of the tile is set accordingly.
+			char actualUse;
+			string movecpy = move;
+			if(movecpy[i] == '?' && resolveBlanks == true){
+					std::string firsthalf, secondhalf;
+					actualUse = movecpy[i+1];
+					firsthalf = movecpy.substr(0,(int)i+1);
+					secondhalf = movecpy.substr((int)i+3, movecpy.size()-(int)i-2);
+					movecpy = firsthalf + secondhalf;
+			}
+		
 
-	   The move string is assumed to have correct syntax.
-	*/
-	std::vector<Tile*> takeTiles (std::string const & move, bool resolveBlanks){
-		return _toMove;
+
+			size_t j = 0;
+			bool hasLetter = false;
+        	while (!hasLetter && j < _tilesOnHand.size()){
+                if(movecpy[i] == _tilesOnHand[j]->getLetter()){
+                    hasLetter = true; 
+					if(resolveBlanks && movecpy[i] == '?'){
+					_tilesOnHand[j]->useAs(actualUse);
+					}
+
+				//push it to the toMOve and delete the tile
+				_toMove.push_back(_tilesOnHand[j]);
+				//delete _tilesOnHand[j];//may have some problems
+				_tilesOnHand.erase(_tilesOnHand.begin()+j);
+				}
+                
+                j++;
+        	}
+		}
+	return _toMove;
 
 	}
 
 	// Adds all the tiles in the vector to the player's hand.
-	void addTiles (std::vector<Tile*> const & tilesToAdd){
-		for (int i = 0; i < tilesToAdd.size();i++){
+	void Player::addTiles (std::vector<Tile*> const & tilesToAdd){
+		for (size_t i = 0; i < tilesToAdd.size();i++){
 		_tilesOnHand.push_back(tilesToAdd.at(i));
 		}
 	}
@@ -122,6 +141,5 @@
         _score += num;
     }
 
-};
 
 

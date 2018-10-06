@@ -73,7 +73,7 @@
         size_t startX = m.getStartx();
         size_t startY = m.getStarty();
         bool horizontal = m.getDirection();
-        //bool isNextto = false;
+        bool isNextto = false;
         std::vector<Tile*> tileVector = m.tileVector();
         std::vector <std::pair<std::string, unsigned int>> words;
         
@@ -82,7 +82,7 @@
         if (!_board[_x-1][_y-1]->isOccupied()){
             if (startX != _x || startY != _y){
                 //throw exceptions
-                //throw length_error("START POSITION");
+                throw length_error("START POSITION");
             }
         }
 
@@ -107,6 +107,7 @@
                 for ( size_t upperhalf = 1 ; startY-1-upperhalf >=0 ;upperhalf++){
                     if (!_board[startX-1+i][startY-1-upperhalf]->isOccupied())   break;
                     
+                    isNextto = true;
                     points += _board[startX-1+i][startY-1-upperhalf]->getLMult()*_board[startX-1+i][startY-1-upperhalf]->getPoints();
                     wordMul *= _board[startX-1+i][startY-1-upperhalf]->getWMult();
                     word += _board[startX-1+i][startY-1-upperhalf]->getLetter();
@@ -116,26 +117,52 @@
                     //add the letter we want to put here
                     word += tileVector[i]->getUse();
 
-                    //then check the lower part of the word
-
+                //then check the lower part of the word
                 for ( size_t lowerhalf = 1 ; startY-1+lowerhalf <= _rows-1 ;lowerhalf++){
                     if (!_board[startX-1+i][startY-1+lowerhalf]->isOccupied())   break;
                     
+                    isNextto = true;
                     points += _board[startX-1+i][startY-1+lowerhalf]->getLMult()*_board[startX-1+i][startY-1+lowerhalf]->getPoints();
                     wordMul *= _board[startX-1+i][startY-1+lowerhalf]->getWMult();
                     word += _board[startX-1+i][startY-1-upperhalf]->getLetter();
                 }
         
                 if (string.size() > 1){
-                    pair<string,int> aWord (word , points);
+                    pair<string,int> aWord (word , points*wordMul);
                     words.push_back(aWord);
                 }
             }
 
             //if vertical
             else{
+                //As before, go left first
+                 for (size_t leftHalf = 1 ; startX-1-leftHalf >=0 ;leftHalf++){
+                    if (!_board[startX-1-leftHalf][startY-1+i]->isOccupied())   break;
+                    
+                    isNextto = true;
+                    points += _board[startX-1-leftHalf][startY-1+i]->getLMult()*_board[startX-1-leftHalf][startY-1+i]->getPoints();
+                    wordMul *= _board[startX-1-leftHalf][startY-1+i]->getWMult();
+                    word += _board[startX-1-leftHalf][startY-1+i]->getLetter();
+                }
+                    //As we read the word from up to down, we need to reverse the order of the first half;
+                    reverse(word.begin(),word.end());
+                    //add the letter we want to put here
+                    word += tileVector[i]->getUse();
 
-
+                //then go to the right
+                for (size_t rightHalf = 1 ; startY-1+rightHalf <= _columns-1 ;rightHalf++){
+                    if (!_board[startX-1+i][startY-1+lowerhalf]->isOccupied())   break;
+                    
+                    isNextto = true;
+                    points += _board[startX-1+rightHalf][startY-1+i]->getLMult()*_board[startX-1+rightHalf][startY-1+i]->getPoints();
+                    wordMul *= _board[startX-1+rightHalf][startY-1+i]->getWMult();
+                    word += _board[startX-1+rightHalf][startY-1+i]->getLetter();
+                }
+        
+                if (string.size() > 1){
+                    pair<string,int> aWord (word , points*wordMul);
+                    words.push_back(aWord);
+                }
 
 
             }
@@ -144,31 +171,83 @@
         //check the dirc that the word is placing
         string mainWord = "";
         int point = 0;
+        int wordMul = 1;
         if (horizontal){
             for (size_t leftSide = 1; startX-1-leftSide >= 0; leftSide++){
                 if(!_board[startX-1-leftside][startY-1]->isOccupied())  break;
 
-                points += _board[startX-1-leftside][startY-1]->getLMult()*_board[startX-1-leftside][startY-1]->getPoints();
+                isNextto = true;
+                point += _board[startX-1-leftside][startY-1]->getLMult()*_board[startX-1-leftside][startY-1]->getPoints();
                 wordMul *= _board[startX-1-leftside][startY-1]->getWMult();
-                word += _board[startX-1-leftside][startY-1]->getLetter();
+                mainWord += _board[startX-1-leftside][startY-1]->getLetter();
             }
 
             //As we read the word from up to down, we need to reverse the order of the first half;
             reverse(word.begin(),word.end());
             //add all the letters we want to put here
+            size_t occupied  = 0;
             for (size_t i = 0; i < tileVector.size();i++){
-                if()
-                word += tileVector[i]->getUse();
+                size_t j = 0;
+                while(_board[startX-1+i+occupied][startY-1]->isOccupied){
+                isNextto = false;
+                mainWord += _board[startX-1+i+occupied][startY-1]->getLetter();
+                occupied++;
+                }
+                mainWord += tileVector[i]->getUse();
             }
-        
-        
-        
-        
-        
-        //if (x-1,y) is occupied
-        //find the head one
-        }
+            size_t tail = startX-1+tileVector.size()+occupied-1;
+            if (tail > _columns-1) throw out_of_range ("OUT OF THE BOARD");
 
+            for (size_t rightSide = 1; tail+rightSide <= _columns-1; rightSide++){
+                if(!_board[tail+rightSide][startY-1]->isOccupied())  break;
+
+                isNextto = true;
+                point += _board[tail+rightSide][startY-1]->getLMult()*_board[tail+rightSide][startY-1]->getPoints();
+                wordMul *= _board[tail+rightSide][startY-1]->getWMult();
+                mainWord += _board[tail+rightSide][startY-1]->getLetter();
+            }
+        //the main word
+        words.push_back(mainWord);
+        }
+        
+        //if it is vertical
+        else{
+                //check the upper side first
+                for (size_t upper = 1; startY-1-upper >= 0; upper++){
+                if(!_board[startX-1][startY-1-upper]->isOccupied())  break;
+
+                isNextto = true;
+                point += _board[startX-1][startY-1-upper]->getLMult()*_board[startX-1][startY-1-upper]->getPoints();
+                wordMul *= _board[startX-1][startY-1-upper]->getWMult();
+                mainWord += _board[startX-1][startY-1-upper]->getLetter();
+            }
+
+            //As we read the word from up to down, we need to reverse the order of the first half;
+            reverse(word.begin(),word.end());
+            //add all the letters we want to put here
+            size_t occupied  = 0;
+            for (size_t i = 0; i < tileVector.size();i++){
+                while(_board[startX-1][startY-1+i]->isOccupied){
+                isNextto = false;
+                mainWord += _board[startX-1][startY-1+i]->getLetter();
+                occupied++;
+                }
+                mainWord += tileVector[i]->getUse();
+            }
+            size_t tail = startY-1+tileVector.size()+occupied-1;
+            if (tail > _rows-1) throw out_of_range ("OUT OF THE BOARD");
+
+            for (size_t below = 1; tail+below <= _rows-1; below++){
+                if(!_board[startX-1][tail+below]->isOccupied())  break;
+
+                isNextto = true;
+                point += _board[startX-1][tail+below]->getLMult()*_board[startX-1][tail+below]->getPoints();
+                wordMul *= _board[startX-1][tail+below]->getWMult();
+                mainWord += _board[startX-1][tail+below]->getLetter();
+            }
+        //the main word
+        words.push_back(mainWord);
+        }
     }
 
 	/* Executes the given move by taking tiles and placing them on the board.
@@ -177,33 +256,46 @@
 	   When a blank tile '?' is placed on the board, it is treated as a letter,
 	   i.e., the corresponding square has that letter (with score 0) placed on it.
 	*/
-	void executePlaceMove (const PlaceMove & m);
+	void Board::executePlaceMove (const PlaceMove & m){
+        size_t startX = m.getStartx();
+        size_t startY = m.getStarty();
+        bool horizontal = m.getDirection();
+        size_t occupiedNum = 0;
+        std::vector<Tile*> tileVector = m.tileVector();
+        for (size_t i = 0; i < m.tileVector.size();i++){
+            if(horizontal){
+                while(_board[startX-1+i+occupiedNum][startY-1]->isOccupied()){
+                    occupiedNum ++;
+                }
+                _board[startX-1+i+occupiedNum][startY-1]->placeTile(tileVector[i]);
+            }
+            
+            else{
+                while(_board[startX-1][startY-1+i+occupiedNum]->isOccupied()){
+                    occupiedNum ++;
+                }
+                _board[startX-1+i+occupiedNum][startY-1]->placeTile(tileVector[i]);
+            }
+        }
+
+
+    }
 
 	/* Returns a pointer to the Square object representing the
        (y,x) position of the board. Indexing starts at 1 here.
 	   This is needed only to display the board. */
-	Square * getSquare (size_t x, size_t y) const;
+	Square * Board::getSquare (size_t x, size_t y) const{
+        return _board[x-1][y-1];
+    }
 
 	/* Returns the number of rows of the board.*/
-	size_t getRows() const;
+	size_t Board::getRows() const{
+        return _rows;
+    }
 
 	/* Returns the number of columns of the board.*/
-	size_t getColumns() const;
-
-	get x
-
-	get y
-
-private:
-size_t _rows;
-size_t _columns;
-size_t _x;
-size_t _y;
-Square _start;
-vector<vector<Square>> board;
+	size_t Board::getColumns() const{
+        return columns;
+    }
 
 
-};
-
-
-#endif /* BOARD_H_ */
