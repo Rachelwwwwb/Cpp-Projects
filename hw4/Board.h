@@ -46,6 +46,7 @@ public:
 	   This function does not check that the words formed are actually in the dictionary.
 	   The words returned from this function must be checked against the dictionary to
 	   determine if the move is legal.	*/
+	   //bacier
 	std::vector<std::pair<std::string, unsigned int>> getPlaceMoveResults(const PlaceMove &m) const;
 
 	/* Executes the given move by taking tiles and placing them on the board.
@@ -66,6 +67,18 @@ public:
 
 	/* Returns the number of columns of the board.*/
 	size_t getColumns() const;
+
+	get x
+
+	get y
+
+private:
+size_t _rows;
+size_t _columns;
+size_t _x;
+size_t _y;
+vector<vector<Square>> board;
+
 
 };
 
