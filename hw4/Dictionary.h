@@ -29,6 +29,8 @@ public:
 	bool isLegalWord (std::string const & word) const;
 
 	//Add more public and private functions/variables here.
+private:
+	std::set <std::string> _dictionary;
 };
 
 

@@ -122,6 +122,8 @@ public:
 		return true;
 	}
 
+	std::string newLetterPicked();
+
 	/* Executes this move, whichever type it is.
 	   This may throw exceptions; students: it's up to you to
 	   decide (and document) what exactly it throws*/
@@ -129,7 +131,8 @@ public:
 	//check if bag is 
 	//Add more public/protected/private functions/variables here.
 	private:
-	std::string tileString
+	std::string _tileString;
+	std::vector<Tile*> _toAdd;
 
 };
 
@@ -187,10 +190,11 @@ public:
 	
 	//maybe bool horizontal???
 private:
-string _tileString;
+std::string _tileString;
 size_t _x;
 size_t _y;
 bool _horizontal;
+std::vector<Tile*> _toAdd;
 
 };
 

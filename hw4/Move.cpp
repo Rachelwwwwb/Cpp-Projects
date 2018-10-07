@@ -5,77 +5,57 @@
 #include "Bag.h"
 #include "Dictionary.h"
 #include "Move.h"
+#include "Board.h"
+
+using namespace std;
 
 
-	static Move * Move::parseMove(std::string moveString, Player &p){
-		_player = p;
-		for (int i = 0; i < moveString.size();i++){
-			moveString[i] = tolower(moveString[i]);
+	 Move * Move::parseMove(std::string moveString, Player &p){
+		for (size_t i = 0; i < moveString.size();i++){
+			moveString[i] = toupper(moveString[i]);
 		}
-		if(moveString == "pass"){
-			return PassMove(p);
+		if(moveString == "PASS"){
+			Move *pass = new PassMove(&p);
+			return pass;
 		}
-		else if (moveString == "exchange"){
-			return ExchangeMove(moveString,p);
-		}
-		else if (moveString == "place"){
-			return PlaceMove();//how to initiate it?
-			//PlaceMove (size_t x, size_t y, bool horizontal, std::string tileString, Player * p);
 
+		else if (moveString.substr(0,8) == "EXCHANGE"){
+			Move * exchange = new ExchangeMove(moveString.substr(9,moveString.size()-9), &p);
+			return exchange;
+		}
+
+		else if (moveString.substr(0,5) == "PLACE"){
+			bool horizontal = true;
+			if (moveString[6] == '-') horizontal = true;
+			else if (moveString[6] == '|') horizontal = false;
+
+			Move* Place = new PlaceMove(moveString[8]-'0',moveString[10]-'0',horizontal,moveString.substr(12,moveString.size()-12),&p);
+			return Place;
 		}
 	}
 
-
-	/* Returns true iff the move is a PASS move */
-	virtual bool Move::isPass () const
-	{
-		return false;
-	}
-
-	/* Returns true iff the move is an EXCHANGE move */
-	virtual bool Move::isExchange () const
-	{
-		return false;
-	}
-
-	/* Returns true iff the move is a PLACE move */
-	virtual bool Move::isWord () const
-	{
-		return false;
-	}
 
 	/* Executes this move, whichever type it is.
 	   This may throw exceptions; students: it's up to you to
 	   decide (and document) what exactly it throws*/
-	virtual void Move::execute(Board & board, Bag & bag, Dictionary & dictionary) = 0;
-
-	virtual ~Move::Move();
-
+	 Move::~Move(){return;}
 	//Add more public/protected/private functions/variables here.
 
-
+	Move::Move(Player * player){
+		_player = player;
+	}
 
 
 	/* Constructs a pass move. */
-	PassMove::PassMove(Player * player){
-		_player = p;
+	PassMove::PassMove(Player * player) : Move(player){
+		_player = player;
 	}
 
-	/* Returns true iff the move is a PASS move */
-	bool PassMove::isPass () const
-	{
-		return true;
+	void PassMove::execute(Board & board, Bag & bag, Dictionary & dictionary){
+		return;
 	}
-
-	/* Executes this move, whichever type it is.
-	   This may throw exceptions; students: it's up to you to
-	   decide (and document) what exactly it throws*/
-	   //add an index or bool variable to show that this player has passed
-	   //so that when all players pass we can end the game
-	void PassMove::execute(Board & board, Bag & bag, Dictionary & dictionary);
 	
 	
-	//Add more public/protected/private functions/variables here.
 
 
 
@@ -84,16 +64,12 @@
 	   string (formatted according to the EXCHANGE command description)
 	   with new tiles from the bag.
 	   */
-	ExchangeMove::ExchangeMove(std::string tileString, Player * p){
+	ExchangeMove::ExchangeMove(std::string tileString, Player * p):Move(p){
 		_tileString = tileString;
 		_player = p;
 	}
 
-	/* Returns true iff the move is an EXCHANGE move */
-	bool ExchangeMove::isExchange () const
-	{
-		return true;
-	}
+
 
 	/* Executes this move, whichever type it is.
 	   This may throw exceptions; students: it's up to you to
@@ -103,31 +79,34 @@
 			//throw exceptions here
 			//and some warnings here	
 		}
-		if (_player.hasTiles(_tileString,false)){
+		if (_player->hasTiles(_tileString,false)){
 			//put the tiles back in
-			std::vector<Tile*> toPutBack = _player.takeTiles(_tileString,false);
+			std::vector<Tile*> toPutBack = _player->takeTiles(_tileString,false);
 			bag.addTiles(toPutBack);
-			std::vector<Tile*> toAdd = bag.drawTiles((size_t)_tileString.size());
-			_player.addTiles(toAdd);
+			//check whether bag is put back
+			_toAdd = bag.drawTiles((size_t)_tileString.size());
+			_player->addTiles(_toAdd);
 		}
 
+	}
+
+	string ExchangeMove::newLetterPicked(){
+		string toAdd = "";
+		for (size_t i = 0; i < _toAdd.size(); i++){
+			toAdd += _toAdd[i]->getLetter();
+		}
+		return toAdd;
+	}
 
 
 
-public:
-	/* Creates a PLACE move, starting at row y, column x, placing the tiles
-	   described by the string tileString. If "horizontal" is true, then the tiles
-	   are placed horizontally, otherwise vertically.
-	   Coordinates start with 1.
-	   The string m is in the format described in HW4; in particular, a '?'
-	   must be followed by the letter it is to be used as.
-	*/
-	PlaceMove::PlaceMove (size_t x, size_t y, bool horizontal, std::string tileString, Player * p){
+
+	PlaceMove::PlaceMove (size_t x, size_t y, bool horizontal, std::string tileString, Player * p) : Move(p){
 		_x = x;
 		_y = y;
 		_horizontal = horizontal;
 		_player = p; 
-		_tileString = tileString
+		_tileString = tileString;
 	}
 	//check if the square is empty; else throw exceptions
 	//check if the string is next to at least one letter
@@ -136,17 +115,10 @@ public:
 	//which means need to going back to the move class
 	//check if it is the beginner player
 
-	/* Returns true iff the move is a PLACE move */
-	bool PlaceMove::isWord () const
-	{
-		return true;
-	}
-
-	/* Returns the vector of tiles associated with a PLACE/EXCHANGE move.
-	   Return value could be arbitrary for PASS moves. */
 	std::vector<Tile*> const & PlaceMove::tileVector () const{
-		if(_player.hasTiles(_tileString,true)){
-			return _player.takeTiles(_tileString,true);
+		if(_player->hasTiles(_tileString,true)){
+			std::vector<Tile*> retval = _player->takeTiles(_tileString,true);
+			return retval;
 		}
 	}
 
@@ -161,26 +133,21 @@ public:
 		return _horizontal;
 	}
 
-	/* Executes this move, whichever type it is.
-	   This may throw exceptions; students: it's up to you to
-	   decide (and document) what exactly it throws*/
-	void PlaceMove::execute(Board & board, Bag & bag, Dictionary & dictionary){}
-//check if physically feasible
-//board bacier
-//	std::vector<std::pair<std::string, unsigned int>> getPlaceMoveResults(const PlaceMove &m) const;
-//dictionary
-//	bool isLegalWord (std::string const & word) const;
-//board put words
-//	void executePlaceMove (const PlaceMove & m);
-//every word has to be used
+	void PlaceMove::execute(Board & board, Bag & bag, Dictionary & dictionary){
+		//check if physically feasible
+		vector<pair<std::string, unsigned int>> words = board.getPlaceMoveResults(*this);
+		vector<string> toCheck;
+		for (size_t i = 0; i < words.size(); i++){
+			toCheck.push_back(words[i].first);
+		}
+		for (size_t i = 0; i < toCheck.size(); i++){
+			if(!dictionary.isLegalWord(toCheck[i])){
+				throw invalid_argument ("ILLEGAL WORD");
+			}
+		}
+		board.executePlaceMove(PlaceMove(_x,_y,_horizontal,_tileString,_player));
+		_toAdd = bag.drawTiles((size_t)_tileString.size());
+		_player->addTiles(_toAdd);
+		
 
-
-	//Add more public/protected/private functions/variables here.
-	
-	//maybe bool horizontal???
-private:
-string _tileString;
-size_t _x;
-size_t _y;
-bool _horizontal;
-
+	}

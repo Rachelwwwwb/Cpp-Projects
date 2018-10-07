@@ -54,6 +54,9 @@ public:
 	//if all goes good, push them to the vector ready to move
 	bool hasTiles(std::string const & move, bool resolveBlanks) const;
 
+	void showHand();
+
+	size_t getMaxTiles() const;
 
 	/* Reads a move string, finds the corresponding tiles in the player's hand, and
 	   removes and returns those tiles in the order they appear in the move string.
@@ -77,7 +80,7 @@ public:
 
 private:
 	std::string _name;
-	size_t maxTiles;
+	size_t _maxTiles;
 	//vector containing all tiles on the hand (AKA unused tiles) 
 	std::vector<Tile*> _tilesOnHand;
 	std::vector<Tile*>_toMove;

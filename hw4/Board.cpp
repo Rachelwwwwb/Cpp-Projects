@@ -2,12 +2,15 @@
 #include <set>
 #include <map>
 #include <vector>
+#include <algorithm>
+#include <fstream>
 #include "Tile.h"
 #include "Square.h"
 #include "Move.h"
 #include "Dictionary.h"
 #include "Board.h"
 
+using namespace std;
 
 	/* constructor that initializes the board state with an empty board
            and the size and bonuses and start square based on the given file. */
@@ -17,7 +20,7 @@
 
 	if(!boardFileStream)
 	{
-		throw FileException("BOARD");
+	//s	throw FileException("BOARD");
 	}
     boardFileStream >> _columns >> _rows;
     boardFileStream >> _x >> _y;
@@ -31,44 +34,33 @@
         getline(boardFileStream,line);
 
         //inside a line (_x)
-		for(size_t i = 1; i <= _columns; i++)
-		{
+		for(size_t i = 1; i <= _columns; i++){
 			if (numRow == _y && i == _x) isStart = true;
             unsigned int LMult = 1;
             unsigned int WMult = 1;
             if (line[i-1] == '2' || line[i-1] == '3')   LMult = line[i-1] - '0';
             else if (line [i-1] == 'd') WMult = 2;
             else if (line [i-1] == 't') WMult = 3;
-            oneSquare = new Square(LMult, WMult, isStart);
+            Square* oneSquare = new Square(LMult, WMult, isStart);
             oneRow.push_back(oneSquare);
-            if(isStart)     _start = oneSquare;
+           // if(isStart)     _start = oneSquare;
 		}
-    numRow++;
-    _board.push_back(oneRow);
+        numRow++;
+        _board.push_back(oneRow);
+    }
     }
 
-	~Board::Board (){
+
+	Board::~Board (){
         for (size_t i = 0; i < _board.size();i++){
-            for(std::vector<Square*>::iterator squareIter = _board[j].begin(); squareIter != _board[j].end(); ++squareIter)
-	        {
+            for(std::vector<Square*>::iterator squareIter = _board[i].begin(); squareIter != _board[i].end(); ++squareIter){
 		        delete *squareIter;
 	        }
            
-            //delete[] _board[j];
         }
     }
 
-	/* returns a vector of all words that would be formed by executing the
-           given move. The first element of the pair is a string containing the word
-           formed, and the second element is the score that that word earns
-           (with all multipliers, but not the 50-point bonus for all letters).
 
-       Words returned are all in uppercase.
-
-	   The last entry of the vector is always the "main" word formed
-	   in the direction chosen by the user; the others could be in arbitrary
-	   order. (This is helpful for backtracking search.)	*/
-	   //bacier
 	std::vector<std::pair<std::string, unsigned int>> Board::getPlaceMoveResults(const PlaceMove &m) const{
         size_t startX = m.getStartx();
         size_t startY = m.getStarty();
@@ -108,7 +100,7 @@
                     if (!_board[startX-1+i][startY-1-upperhalf]->isOccupied())   break;
                     
                     isNextto = true;
-                    points += _board[startX-1+i][startY-1-upperhalf]->getLMult()*_board[startX-1+i][startY-1-upperhalf]->getPoints();
+                    points += _board[startX-1+i][startY-1-upperhalf]->getLMult()*_board[startX-1+i][startY-1-upperhalf]->getScore();
                     wordMul *= _board[startX-1+i][startY-1-upperhalf]->getWMult();
                     word += _board[startX-1+i][startY-1-upperhalf]->getLetter();
                 }
@@ -122,12 +114,12 @@
                     if (!_board[startX-1+i][startY-1+lowerhalf]->isOccupied())   break;
                     
                     isNextto = true;
-                    points += _board[startX-1+i][startY-1+lowerhalf]->getLMult()*_board[startX-1+i][startY-1+lowerhalf]->getPoints();
+                    points += _board[startX-1+i][startY-1+lowerhalf]->getLMult()*_board[startX-1+i][startY-1+lowerhalf]->getScore();
                     wordMul *= _board[startX-1+i][startY-1+lowerhalf]->getWMult();
-                    word += _board[startX-1+i][startY-1-upperhalf]->getLetter();
+                    word += _board[startX-1+i][startY-1-lowerhalf]->getLetter();
                 }
         
-                if (string.size() > 1){
+                if (word.size() > 1){
                     pair<string,int> aWord (word , points*wordMul);
                     words.push_back(aWord);
                 }
@@ -140,7 +132,7 @@
                     if (!_board[startX-1-leftHalf][startY-1+i]->isOccupied())   break;
                     
                     isNextto = true;
-                    points += _board[startX-1-leftHalf][startY-1+i]->getLMult()*_board[startX-1-leftHalf][startY-1+i]->getPoints();
+                    points += _board[startX-1-leftHalf][startY-1+i]->getLMult()*_board[startX-1-leftHalf][startY-1+i]->getScore();
                     wordMul *= _board[startX-1-leftHalf][startY-1+i]->getWMult();
                     word += _board[startX-1-leftHalf][startY-1+i]->getLetter();
                 }
@@ -151,21 +143,22 @@
 
                 //then go to the right
                 for (size_t rightHalf = 1 ; startY-1+rightHalf <= _columns-1 ;rightHalf++){
-                    if (!_board[startX-1+i][startY-1+lowerhalf]->isOccupied())   break;
+                    if (!_board[startX-1+i][startY-1+rightHalf]->isOccupied())   break;
                     
                     isNextto = true;
-                    points += _board[startX-1+rightHalf][startY-1+i]->getLMult()*_board[startX-1+rightHalf][startY-1+i]->getPoints();
+                    points += _board[startX-1+rightHalf][startY-1+i]->getLMult()*_board[startX-1+rightHalf][startY-1+i]->getScore();
                     wordMul *= _board[startX-1+rightHalf][startY-1+i]->getWMult();
                     word += _board[startX-1+rightHalf][startY-1+i]->getLetter();
                 }
         
-                if (string.size() > 1){
+                if (word.size() > 1){
                     pair<string,int> aWord (word , points*wordMul);
                     words.push_back(aWord);
                 }
 
 
             }
+            
 
         }
         //check the dirc that the word is placing
@@ -174,21 +167,20 @@
         int wordMul = 1;
         if (horizontal){
             for (size_t leftSide = 1; startX-1-leftSide >= 0; leftSide++){
-                if(!_board[startX-1-leftside][startY-1]->isOccupied())  break;
+                if(!_board[startX-1-leftSide][startY-1]->isOccupied())  break;
 
                 isNextto = true;
-                point += _board[startX-1-leftside][startY-1]->getLMult()*_board[startX-1-leftside][startY-1]->getPoints();
-                wordMul *= _board[startX-1-leftside][startY-1]->getWMult();
-                mainWord += _board[startX-1-leftside][startY-1]->getLetter();
+                point += _board[startX-1-leftSide][startY-1]->getLMult()*_board[startX-1-leftSide][startY-1]->getScore();
+                wordMul *= _board[startX-1-leftSide][startY-1]->getWMult();
+                mainWord += _board[startX-1-leftSide][startY-1]->getLetter();
             }
 
             //As we read the word from up to down, we need to reverse the order of the first half;
-            reverse(word.begin(),word.end());
+            reverse(mainWord.begin(),mainWord.end());
             //add all the letters we want to put here
             size_t occupied  = 0;
             for (size_t i = 0; i < tileVector.size();i++){
-                size_t j = 0;
-                while(_board[startX-1+i+occupied][startY-1]->isOccupied){
+                while(_board[startX-1+i+occupied][startY-1]->isOccupied()){
                 isNextto = false;
                 mainWord += _board[startX-1+i+occupied][startY-1]->getLetter();
                 occupied++;
@@ -202,12 +194,13 @@
                 if(!_board[tail+rightSide][startY-1]->isOccupied())  break;
 
                 isNextto = true;
-                point += _board[tail+rightSide][startY-1]->getLMult()*_board[tail+rightSide][startY-1]->getPoints();
+                point += _board[tail+rightSide][startY-1]->getLMult()*_board[tail+rightSide][startY-1]->getScore();
                 wordMul *= _board[tail+rightSide][startY-1]->getWMult();
                 mainWord += _board[tail+rightSide][startY-1]->getLetter();
             }
         //the main word
-        words.push_back(mainWord);
+        pair<string,int> MainWord (mainWord , point*wordMul);
+        words.push_back(MainWord);
         }
         
         //if it is vertical
@@ -217,17 +210,17 @@
                 if(!_board[startX-1][startY-1-upper]->isOccupied())  break;
 
                 isNextto = true;
-                point += _board[startX-1][startY-1-upper]->getLMult()*_board[startX-1][startY-1-upper]->getPoints();
+                point += _board[startX-1][startY-1-upper]->getLMult()*_board[startX-1][startY-1-upper]->getScore();
                 wordMul *= _board[startX-1][startY-1-upper]->getWMult();
                 mainWord += _board[startX-1][startY-1-upper]->getLetter();
-            }
+                }
 
             //As we read the word from up to down, we need to reverse the order of the first half;
-            reverse(word.begin(),word.end());
+            reverse(mainWord.begin(),mainWord.end());
             //add all the letters we want to put here
             size_t occupied  = 0;
             for (size_t i = 0; i < tileVector.size();i++){
-                while(_board[startX-1][startY-1+i]->isOccupied){
+                while(_board[startX-1][startY-1+i]->isOccupied()){
                 isNextto = false;
                 mainWord += _board[startX-1][startY-1+i]->getLetter();
                 occupied++;
@@ -241,28 +234,25 @@
                 if(!_board[startX-1][tail+below]->isOccupied())  break;
 
                 isNextto = true;
-                point += _board[startX-1][tail+below]->getLMult()*_board[startX-1][tail+below]->getPoints();
+                point += _board[startX-1][tail+below]->getLMult()*_board[startX-1][tail+below]->getScore();
                 wordMul *= _board[startX-1][tail+below]->getWMult();
                 mainWord += _board[startX-1][tail+below]->getLetter();
             }
-        //the main word
-        words.push_back(mainWord);
+            //the main word
+            pair<string,int> MainWord (mainWord , point*wordMul);
+            words.push_back(MainWord);
         }
+
+    return words;
     }
 
-	/* Executes the given move by taking tiles and placing them on the board.
-	   This function does not check for correctness of the move, so could
-	   segfault or cause other errors if called for an incorrect move.
-	   When a blank tile '?' is placed on the board, it is treated as a letter,
-	   i.e., the corresponding square has that letter (with score 0) placed on it.
-	*/
 	void Board::executePlaceMove (const PlaceMove & m){
         size_t startX = m.getStartx();
         size_t startY = m.getStarty();
         bool horizontal = m.getDirection();
         size_t occupiedNum = 0;
         std::vector<Tile*> tileVector = m.tileVector();
-        for (size_t i = 0; i < m.tileVector.size();i++){
+        for (size_t i = 0; i < tileVector.size();i++){
             if(horizontal){
                 while(_board[startX-1+i+occupiedNum][startY-1]->isOccupied()){
                     occupiedNum ++;
@@ -281,21 +271,16 @@
 
     }
 
-	/* Returns a pointer to the Square object representing the
-       (y,x) position of the board. Indexing starts at 1 here.
-	   This is needed only to display the board. */
 	Square * Board::getSquare (size_t x, size_t y) const{
         return _board[x-1][y-1];
     }
 
-	/* Returns the number of rows of the board.*/
 	size_t Board::getRows() const{
         return _rows;
     }
 
-	/* Returns the number of columns of the board.*/
 	size_t Board::getColumns() const{
-        return columns;
+        return _columns;
     }
 
 

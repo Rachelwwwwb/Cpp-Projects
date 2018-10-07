@@ -1,6 +1,7 @@
 #include <string>
 #include <set>
 #include <vector>
+#include <iostream>
 
 #include "Tile.h"
 #include "Player.h"
@@ -13,17 +14,16 @@ using namespace std;
 	*/
 	Player::Player (std::string const & name, size_t maxTiles){
     _name = name;
-	//_maxTiles = maxTiles;
+	_maxTiles = maxTiles;
 	_score = 0;
     }
 
 	/* Destructor for a player. Deletes all the tiles the player still has. */
 	Player::~Player (){
-        for(std::vector<Tile*>::iterator tileIter = _tilesOnHand.begin(); tileIter != _tilesOnHand.end(); ++tileIter)
-	{
+        for(std::vector<Tile*>::iterator tileIter = _tilesOnHand.begin(); tileIter != _tilesOnHand.end(); ++tileIter){
 		delete *tileIter;
+		}
 	}
-}
 
 	/* Returns the set of tiles the player currently holds. */
     //set cannot store repeat stuff
@@ -35,18 +35,13 @@ using namespace std;
     return handTiles;
     }
 
-	/* Reads a move string and confirms that the player has the tiles necessary to
-	   execute this move.
+	void Player::showHand(){
+		cout << "_tilesOnHand.size" << _tilesOnHand.size()<<endl;
+		for (size_t i = 0; i < _tilesOnHand.size();i++){
+			cout << _tilesOnHand[i]->getLetter()<<endl;
+		}
+	}
 
-	   The move string is case-insensitive.
-
-	   The boolean resolveBlanks states whether this is a PLACE or EXCHANGE move.
-	   If resolveBlanks is true, then when the string contains a '?',
-	   the next letter is interpreted as the letter to use the blank as.
-
-	   By definition, if this function returns true, then takeTiles() would
-	   succeed.
-	 */
 	//"move" is string of char that the player wish to move
 	//check to see if the player has all the letters (num and letter)
 	//if resolve blanks is true
@@ -57,7 +52,9 @@ using namespace std;
 	
         bool hasLetter = false;
 		//create a copy of move
-		string movecpy;
+		string movecpy = move;
+		std::vector<Tile*> copyOfHand = _tilesOnHand;
+
         for (size_t i = 0; i < movecpy.size();i++){
 
 				//if it is a '?'
@@ -74,11 +71,16 @@ using namespace std;
 				}
 
             size_t j = 0;
-            while (!hasLetter && j < _tilesOnHand.size()){
-                if(movecpy[i] == _tilesOnHand.at(j)->getLetter()){
-                    hasLetter = true; 
+            while (!hasLetter && j < copyOfHand.size()){
+                if(tolower(movecpy[i]) == tolower(copyOfHand[j]->getLetter())){
+                    copyOfHand.erase(copyOfHand.begin()+j);
+					hasLetter = true; 
                 }
-                else if (j == _tilesOnHand.size()-1 && movecpy[i]!= _tilesOnHand.at(j)->getLetter()){
+				else if (toupper (movecpy[i]) == toupper (copyOfHand[j]->getLetter())){
+                    copyOfHand.erase(copyOfHand.begin()+j);
+					hasLetter = true; 
+                }
+                else if (j == copyOfHand.size()-1 && movecpy[i]!= copyOfHand[j]->getLetter()){
                     return false;
                 }
                 j++;
@@ -94,9 +96,9 @@ using namespace std;
 	std::vector<Tile*> Player::takeTiles (std::string const & move, bool resolveBlanks){
 		
 		for (size_t i = 0; i < move.size();i++){
-
 			char actualUse;
 			string movecpy = move;
+
 			if(movecpy[i] == '?' && resolveBlanks == true){
 					std::string firsthalf, secondhalf;
 					actualUse = movecpy[i+1];
@@ -105,21 +107,21 @@ using namespace std;
 					movecpy = firsthalf + secondhalf;
 			}
 		
-
-
 			size_t j = 0;
 			bool hasLetter = false;
         	while (!hasLetter && j < _tilesOnHand.size()){
-                if(movecpy[i] == _tilesOnHand[j]->getLetter()){
+                if(toupper(movecpy[i]) == toupper(_tilesOnHand[j]->getLetter())){
                     hasLetter = true; 
 					if(resolveBlanks && movecpy[i] == '?'){
 					_tilesOnHand[j]->useAs(actualUse);
 					}
-
+				
+				cout <<i<<": "<< _tilesOnHand[j]->getLetter()<<endl;
 				//push it to the toMOve and delete the tile
 				_toMove.push_back(_tilesOnHand[j]);
 				//delete _tilesOnHand[j];//may have some problems
 				_tilesOnHand.erase(_tilesOnHand.begin()+j);
+
 				}
                 
                 j++;
@@ -132,7 +134,10 @@ using namespace std;
 	// Adds all the tiles in the vector to the player's hand.
 	void Player::addTiles (std::vector<Tile*> const & tilesToAdd){
 		for (size_t i = 0; i < tilesToAdd.size();i++){
-		_tilesOnHand.push_back(tilesToAdd.at(i));
+		_tilesOnHand.push_back(tilesToAdd[i]);
+		/*char letter = tilesToAdd[i]->getLetter();
+		letter = toupper(letter);
+		_tilesOnHand.push_back(new Tile(letter,tilesToAdd[i]->getPoints()));*/
 		}
 	}
 
@@ -142,4 +147,7 @@ using namespace std;
     }
 
 
+	size_t Player::getMaxTiles () const{
+		return _maxTiles;
+	}
 

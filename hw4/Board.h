@@ -68,16 +68,13 @@ public:
 	/* Returns the number of columns of the board.*/
 	size_t getColumns() const;
 
-	get x
-
-	get y
 
 private:
 size_t _rows;
 size_t _columns;
 size_t _x;
 size_t _y;
-vector<vector<Square>> board;
+std::vector<std::vector<Square*>> _board;
 
 
 };
