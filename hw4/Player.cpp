@@ -2,6 +2,8 @@
 #include <set>
 #include <vector>
 #include <iostream>
+#include <stdio.h>
+#include <ctype.h>
 
 #include "Tile.h"
 #include "Player.h"
@@ -50,13 +52,11 @@ using namespace std;
 	//if all goes good, push them to the vector ready to move
 	bool Player::hasTiles(std::string const & move, bool resolveBlanks) const{
 	
-        bool hasLetter = false;
 		//create a copy of move
 		string movecpy = move;
 		std::vector<Tile*> copyOfHand = _tilesOnHand;
 
         for (size_t i = 0; i < movecpy.size();i++){
-
 				//if it is a '?'
 				//when there's a '?' and the move is place
 				if(resolveBlanks && movecpy[i] == '?'){
@@ -65,12 +65,17 @@ using namespace std;
 				else{ // take away the letter behind it
 					std::string firsthalf, secondhalf;
 					firsthalf = movecpy.substr(0,(int)i+1);
-					secondhalf = movecpy.substr((int)i+3, movecpy.size()-(int)i-2);
-					movecpy = firsthalf + secondhalf;
+					if ((unsigned int)i+2 < movecpy.size()){
+					secondhalf = movecpy.substr((int)i+2, movecpy.size()-(int)i-2);
+					movecpy = firsthalf + secondhalf;}
+					else{
+						movecpy = firsthalf;
+					}
 				}
 				}
 
             size_t j = 0;
+			bool hasLetter = false;
             while (!hasLetter && j < copyOfHand.size()){
                 if(tolower(movecpy[i]) == tolower(copyOfHand[j]->getLetter())){
                     copyOfHand.erase(copyOfHand.begin()+j);
@@ -95,16 +100,21 @@ using namespace std;
 
 	std::vector<Tile*> Player::takeTiles (std::string const & move, bool resolveBlanks){
 		
-		for (size_t i = 0; i < move.size();i++){
-			char actualUse;
 			string movecpy = move;
+			std::vector<Tile*>_toMove;
+		for (size_t i = 0; i < movecpy.size();i++){
+			char actualUse;
 
 			if(movecpy[i] == '?' && resolveBlanks == true){
 					std::string firsthalf, secondhalf;
 					actualUse = movecpy[i+1];
 					firsthalf = movecpy.substr(0,(int)i+1);
-					secondhalf = movecpy.substr((int)i+3, movecpy.size()-(int)i-2);
-					movecpy = firsthalf + secondhalf;
+					if ((unsigned int)i+2 < movecpy.size()){
+					secondhalf = movecpy.substr((int)i+2, movecpy.size()-(int)i-2);
+					movecpy = firsthalf + secondhalf;}
+					else{
+						movecpy = firsthalf;
+					}
 			}
 		
 			size_t j = 0;
@@ -116,10 +126,9 @@ using namespace std;
 					_tilesOnHand[j]->useAs(actualUse);
 					}
 				
-				cout <<i<<": "<< _tilesOnHand[j]->getLetter()<<endl;
+				cerr <<i<<": "<< _tilesOnHand[j]->getLetter()<<endl;
 				//push it to the toMOve and delete the tile
 				_toMove.push_back(_tilesOnHand[j]);
-				//delete _tilesOnHand[j];//may have some problems
 				_tilesOnHand.erase(_tilesOnHand.begin()+j);
 
 				}
@@ -127,6 +136,7 @@ using namespace std;
                 j++;
         	}
 		}
+		cerr << "the size of _tomove in Player.cpp: "<<_toMove.size()<<endl;
 	return _toMove;
 
 	}
@@ -151,3 +161,22 @@ using namespace std;
 		return _maxTiles;
 	}
 
+	int Player::getScore() const{
+		return _score;
+	}
+
+	bool Player::isEmpty() const{
+		return !_tilesOnHand.size();
+	}
+
+	int Player::scoresInHand() const{
+		int retval = 0;
+		for (size_t i = 0; i < _tilesOnHand.size();i++){
+			retval += _tilesOnHand[i]->getPoints();
+		}
+		return retval;
+	}
+
+	std::string Player::getName() const{
+		return _name;
+	}

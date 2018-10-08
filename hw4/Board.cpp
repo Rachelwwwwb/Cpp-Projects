@@ -3,7 +3,10 @@
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <iostream>
 #include <fstream>
+#include <exception>
+#include "exception"
 #include "Tile.h"
 #include "Square.h"
 #include "Move.h"
@@ -20,7 +23,7 @@ using namespace std;
 
 	if(!boardFileStream)
 	{
-	//s	throw FileException("BOARD");
+	   // throw FileException("BOARD");
 	}
     boardFileStream >> _columns >> _rows;
     boardFileStream >> _x >> _y;
@@ -30,15 +33,17 @@ using namespace std;
 	{
 	    vector<Square*> oneRow;
         string line;
-        bool isStart = false;
         getline(boardFileStream,line);
 
         //inside a line (_x)
+        if (line != ""){
 		for(size_t i = 1; i <= _columns; i++){
+            bool isStart = false;
 			if (numRow == _y && i == _x) isStart = true;
             unsigned int LMult = 1;
             unsigned int WMult = 1;
-            if (line[i-1] == '2' || line[i-1] == '3')   LMult = line[i-1] - '0';
+            if (line[i-1] == '2') LMult = 2;
+            else if (line[i-1] == '3') LMult = 3;
             else if (line [i-1] == 'd') WMult = 2;
             else if (line [i-1] == 't') WMult = 3;
             Square* oneSquare = new Square(LMult, WMult, isStart);
@@ -47,6 +52,18 @@ using namespace std;
 		}
         numRow++;
         _board.push_back(oneRow);
+    }
+    }
+
+   
+    }
+
+    void Board::printBoard() const{
+        for (size_t i = 0; i < _board.size();i++){
+        for (size_t j = 0; j < _board[i].size();j++){
+            cout << _board[i][j] -> getLMult();
+        }
+        cout << endl;
     }
     }
 
@@ -67,6 +84,7 @@ using namespace std;
         bool horizontal = m.getDirection();
         bool isNextto = false;
         std::vector<Tile*> tileVector = m.tileVector();
+        cerr << "size of tileVector in Board.cpp: "<< tileVector.size() << endl;
         std::vector <std::pair<std::string, unsigned int>> words;
         
 
@@ -74,7 +92,10 @@ using namespace std;
         if (!_board[_x-1][_y-1]->isOccupied()){
             if (startX != _x || startY != _y){
                 //throw exceptions
-                throw length_error("START POSITION");
+                throw domain_error ("START POSITION");
+            }
+            else{
+                isNextto = true;
             }
         }
 
@@ -97,6 +118,7 @@ using namespace std;
             if (horizontal){
                 //find the upper part of the word
                 for ( size_t upperhalf = 1 ; startY-1-upperhalf >=0 ;upperhalf++){
+                    if (startX-1+i<0 && startY-1-upperhalf < 0) break;
                     if (!_board[startX-1+i][startY-1-upperhalf]->isOccupied())   break;
                     
                     isNextto = true;
@@ -111,6 +133,7 @@ using namespace std;
 
                 //then check the lower part of the word
                 for ( size_t lowerhalf = 1 ; startY-1+lowerhalf <= _rows-1 ;lowerhalf++){
+                    if (startY-1+lowerhalf > _rows-1) break;
                     if (!_board[startX-1+i][startY-1+lowerhalf]->isOccupied())   break;
                     
                     isNextto = true;
@@ -158,6 +181,9 @@ using namespace std;
 
 
             }
+            if(!isNextto){
+                throw range_error ("Not NEXT TO SOME LETTER");
+            }
             
 
         }
@@ -186,7 +212,10 @@ using namespace std;
                 occupied++;
                 }
                 mainWord += tileVector[i]->getUse();
+                point += tileVector[i]->getPoints()*_board[startX-1+i+occupied][startY-1]->getLMult();
+                wordMul *= _board[startX-1+i+occupied][startY-1]->getWMult();
             }
+
             size_t tail = startX-1+tileVector.size()+occupied-1;
             if (tail > _columns-1) throw out_of_range ("OUT OF THE BOARD");
 
@@ -226,6 +255,8 @@ using namespace std;
                 occupied++;
                 }
                 mainWord += tileVector[i]->getUse();
+                point += tileVector[i]->getPoints()*_board[startX-1+i+occupied][startY-1]->getLMult();
+                wordMul *= _board[startX-1+i+occupied][startY-1]->getWMult();
             }
             size_t tail = startY-1+tileVector.size()+occupied-1;
             if (tail > _rows-1) throw out_of_range ("OUT OF THE BOARD");
@@ -257,14 +288,24 @@ using namespace std;
                 while(_board[startX-1+i+occupiedNum][startY-1]->isOccupied()){
                     occupiedNum ++;
                 }
+                if (startX-1+i+occupiedNum <= _columns-1){
                 _board[startX-1+i+occupiedNum][startY-1]->placeTile(tileVector[i]);
+                }
+                else{
+                    throw out_of_range ("OUT OF BORDER");
+                }
             }
             
             else{
                 while(_board[startX-1][startY-1+i+occupiedNum]->isOccupied()){
                     occupiedNum ++;
                 }
-                _board[startX-1+i+occupiedNum][startY-1]->placeTile(tileVector[i]);
+                if (startY-1+i+occupiedNum <= _rows-1){
+                _board[startX-1][startY-1+i+occupiedNum]->placeTile(tileVector[i]);
+                }
+                else{
+                    throw out_of_range ("OUT OF BORDER");
+                }
             }
         }
 

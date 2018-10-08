@@ -53,7 +53,7 @@ int main(){
     bool resolveBlanks = true;
 
 	/*Check hasTiles()*/
-	/*cout << "Enter the tiles you want to check: ";
+	cout << "Enter the tiles you want to check: ";
 	string move;
 	cin >> move;
 	if(my_player->hasTiles(move, resolveBlanks)){
@@ -61,7 +61,7 @@ int main(){
 	}
 	else{
 		cout << "You don't have these tiles!" << endl;
-	}*/
+	}
 
 	/*Check taketiles*/
 	cout << "Enter the tiles you want to take: ";

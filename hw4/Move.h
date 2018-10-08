@@ -116,6 +116,8 @@ public:
 	   */
 	ExchangeMove(std::string tileString, Player * p);
 
+	~ExchangeMove();
+
 	/* Returns true iff the move is an EXCHANGE move */
 	bool isExchange () const
 	{
@@ -156,6 +158,8 @@ public:
 	//which means need to going back to the move class
 	//check if it is the beginner player
 
+	~PlaceMove();
+
 	/* Returns true iff the move is a PLACE move */
 	bool isWord () const
 	{
@@ -186,6 +190,10 @@ public:
 
 	bool getDirection() const;
 
+	void printNewWord();
+
+	int getNewScore();
+
 	//Add more public/protected/private functions/variables here.
 	
 	//maybe bool horizontal???
@@ -195,6 +203,9 @@ size_t _x;
 size_t _y;
 bool _horizontal;
 std::vector<Tile*> _toAdd;
+std::vector <Tile*> _tilestotake;
+std::vector<std::string> _newWords;
+int _newScore;
 
 };
 

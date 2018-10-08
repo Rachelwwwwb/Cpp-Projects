@@ -29,5 +29,13 @@ using namespace std;
 	/* Checks whether the given word is in the dictionary, and returns true if so.
 	   Case should not matter. Must run in O(logn) for the number of words in the dictionary. */
 	bool Dictionary::isLegalWord (std::string const & word) const{
-        return _dictionary.find(word) != _dictionary.end();
+        string lower = "";
+        string upper = "";
+        for (size_t i = 0; i < word.size();i++){
+            lower += tolower(word[i]);
+            upper += toupper(word[i]);
+        }
+        bool _lower = _dictionary.find(lower) != _dictionary.end();
+        bool _upper = _dictionary.find(upper) != _dictionary.end();
+        return _lower || _upper;
     }

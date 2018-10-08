@@ -78,12 +78,19 @@ public:
 	//Add more public/protected/private functions/variables here.
 	void addScore (int num);
 
+	int getScore() const;
+
+	bool isEmpty() const;
+
+	int scoresInHand() const;
+
+	std::string getName() const;
+
 private:
 	std::string _name;
 	size_t _maxTiles;
 	//vector containing all tiles on the hand (AKA unused tiles) 
 	std::vector<Tile*> _tilesOnHand;
-	std::vector<Tile*>_toMove;
 	int _score;
 //	map <char, int> _words;
 //points of all unused tiles by now

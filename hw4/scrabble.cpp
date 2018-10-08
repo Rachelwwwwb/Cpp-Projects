@@ -72,11 +72,12 @@ int main(int argc, char* argv[]){
     cin >> numOfPlayers;
     }
     vector<Player*> playerList;
+    cin.ignore();
+
     for (size_t i = 0; i < numOfPlayers; i++){
         string name;
         cout << "The name for player "<< (int)i+1 << ": ";
         getline(std::cin,name);
-        cin.ignore();
         playerList.push_back(new Player (name , handSize));
         std::vector<Tile*> tilesDrawn = myBag.drawTiles (handSize);
         playerList[i]->addTiles(tilesDrawn);
@@ -87,23 +88,30 @@ int main(int argc, char* argv[]){
     size_t pass_num = 0; 
     bool contPlay = true;
     //the condition that the game ends
-   // while(contPlay && pass_num < numOfPlayers){
+    while(contPlay && pass_num < numOfPlayers){
         //each individual get to choose
         for (size_t i = 0; i < numOfPlayers; i++){
+            bool ifcontinue = true;
+        while(ifcontinue){
+            ifcontinue = false;
+             myBoard.printBoard();
+
             printer.printBoard(myBoard);
             printer.printHand(*playerList[i]);
             
-            cin.ignore();
+            //cin.ignore();
             string moveString = "";
-            cout<< "It is Player "<< i+1 <<"'s turn" <<endl;
+            cout<< "It is Player "<< i+1 <<" " << playerList[i] -> getName() <<"'s turn" <<endl;
             cout << "Enter your move: ";
             getline (std::cin, moveString);
             
+            cerr << moveString<<endl;
             Move*_move;
             Move* oneMove;
             oneMove = _move->parseMove(moveString, *playerList[i]);
 
             if (oneMove -> isPass()){
+                ifcontinue = false;
                 pass_num ++;
                 cout << "Your are passing this round..."<<endl;
             }
@@ -113,22 +121,53 @@ int main(int argc, char* argv[]){
                 cout << "New letter picked up: "<< exchange -> newLetterPicked()<<endl;
 
                 printer.printHand(*playerList[i]);
+
                 }
             else if (oneMove -> isWord()){
                 PlaceMove* place = (PlaceMove*) oneMove;
-                //cerr<< place->getStartx();
-                //cerr<< place->getStarty();
-                //cerr << place->getDirection();
-
+               
+               try{
                 place -> execute(myBoard, myBag, myDic);
-                //printer.printBoard(myBoard);
-                //printer.printHand(*playerList[i]);
+               }
+               catch (out_of_range& o){
+                   ifcontinue = true;
+                   cout << "Out of range: "<< o.what() <<endl;
+               }
+               catch (invalid_argument& i){
+                    ifcontinue = true;
+                   cout << "Invalid Word: " << i.what() << endl;
+               }
+               catch (length_error& l){
+                    ifcontinue = true;
+                   cout<< "Not start at starting position" << l.what() << endl;
+               }
+               catch (domain_error& d){
+                   ifcontinue = true;
+                   cout << "the starting position is occupied "<< d.what() << endl;
+               }
+               catch (range_error& r){
+                   ifcontinue = true;
+                   cout << "not next to certain letter " << r.what() << endl;
+               }
 
+               if (!ifcontinue){
+                printer.printBoard(myBoard);
+                printer.printHand(*playerList[i]);
+                cout << "New words added: ";
+                place->printNewWord();
+                cout << endl;
+                cout << "New score earned: " << place -> getNewScore() << endl;
+                cout << "Total score for player "<< i+1 <<": "<<playerList[i]->getScore()<<endl;
+               }
             }
+            delete oneMove;
 
-
-
-
+        }
+            //check if the player has used up all the tiles
+            if (playerList[i] -> isEmpty()){
+                contPlay = false;
+                break;
+            }
 
             cout << "Enter return to continue..."<<endl;
             cin.ignore();
@@ -136,7 +175,47 @@ int main(int argc, char* argv[]){
         //each round for each player
         }
     //while loop
-    //}
+    }
+
+    //score calculation:
+    vector <int> scoreList;
+    int scoreOnHandTotal = 0;
+    for (size_t i = 0; i < playerList.size(); i++){
+         scoreOnHandTotal += playerList[i] -> scoresInHand();                
+    }
+    for (size_t i = 0; i < playerList.size();i++){
+        int score = 0;
+        if (playerList[i] -> scoresInHand() == 0){
+            cout << "Player "<< i+1 <<"uses all!" << endl;
+            score = scoreOnHandTotal + playerList[i] -> getScore();
+        }
+        else{
+            score = playerList[i] -> getScore() - playerList[i] -> scoresInHand();
+        }
+        scoreList.push_back(score);
+    }
+    for (size_t i = 0; i < scoreList.size();i++){
+        cout << "Player "<< i+1 << "'s score is "<< scoreList[i] << endl;
+    }
+
+    for (size_t i = playerList.size()-1; i > 0; i--){
+        for (size_t j = 0; j < i; j++){
+            if (playerList[j]->getScore() > playerList[j+1]->getScore()){
+                    Player* tmp = playerList[j];
+                    playerList[j] = playerList[j+1];
+                    playerList[j+1] = tmp;
+            }
+        }
+    }
+    
+    for(size_t i = 0; i < playerList.size();i++){
+        cout << playerList[i] -> getName() << " is Winner!!!" <<endl;
+        if (i+1 == playerList.size())  break;
+        if (playerList[i+1]->getScore() < playerList[i]->getScore()) break;
+    }
+
+
+
 
 //the big main
 }
