@@ -71,7 +71,6 @@ using namespace std;
         bool horizontal = m.getDirection();
         bool isNextto = false;
         std::vector<Tile*> tileVector = m.tileVector();
-        cerr << "size of tileVector in Board.cpp: "<< tileVector.size() << endl;
         std::vector <std::pair<std::string, unsigned int>> words;
         
         bool startCorrect = true;
@@ -133,7 +132,6 @@ using namespace std;
                     pair<string,int> aWord (word , points*wordMul);
                     words.push_back(aWord);
                 }
-                cerr << "Horizontal each letter: "<< i << "th : "<< word;
                 j++;
             }
 
@@ -184,7 +182,6 @@ using namespace std;
         }
         //check the dirc that the word is placing
         string mainWord = "";
-        cerr << "line 184: mainWord: "<<mainWord << "this"<<endl;
         int point = 0;
         int wordMul = 1;
         if (horizontal){
@@ -214,8 +211,6 @@ using namespace std;
                 isNextto = true;
                 }
                 mainWord += tileVector[i]->getUse();
-                cerr << "line 208: mainWord: "<<i<<": "<<mainWord<<endl;
-                cerr << "mainWord.size()" << mainWord.size()<<endl;
                 point += tileVector[i]->getPoints()*_board[startY-1][startX-1+i+occupied]->getLMult();
                 wordMul *= _board[startY-1][startX-1+i+occupied]->getWMult();
                if (startX-1+i+occupied == _x-1 && startY-1 == _y-1){
@@ -310,10 +305,6 @@ using namespace std;
              if(!isNextto){
                 m.getPlayer() -> addTiles(tileVector);
                 throw range_error ("Not NEXT TO SOME LETTER");
-            }
-
-            for (size_t i = 0; i <  words.size();i++){
-                cout << i << " : " << words[i].first << ": "<< words[i].second << endl;
             }
 
     return words;

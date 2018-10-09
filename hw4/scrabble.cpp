@@ -99,7 +99,6 @@ int main(int argc, char* argv[]){
             cout << "Enter your move: ";
             getline (std::cin, moveString);
             
-            cerr << moveString<<endl;
             Move*_move;
             Move* oneMove;
             oneMove = _move->parseMove(moveString, *playerList[i]);
@@ -148,6 +147,7 @@ int main(int argc, char* argv[]){
                     ifcontinue = true;
                     cout << "Words formed: ";
                     place->printNewWord();
+                    cout << endl;
                    cout << "Invalid Word: " << i.what() << endl;
                }
                catch (length_error& l){
@@ -221,12 +221,13 @@ int main(int argc, char* argv[]){
             }
         }
     }
-    
+    cout << "Winner:";
     for(size_t i = 0; i < playerList.size();i++){
-        cout << playerList[i] -> getName() << " is Winner!!!" <<endl;
+        cout<< " " << playerList[i] -> getName();
         if (i+1 == playerList.size())  break;
         if (playerList[i+1]->getScore() < playerList[i]->getScore()) break;
     }
+    cout << endl;
 
     for (size_t i = 0; i < playerList.size(); i++){
         delete playerList[i];

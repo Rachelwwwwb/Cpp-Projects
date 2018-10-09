@@ -38,7 +38,6 @@ using namespace std;
     }
 
 	void Player::showHand(){
-		cout << "_tilesOnHand.size" << _tilesOnHand.size()<<endl;
 		for (size_t i = 0; i < _tilesOnHand.size();i++){
 			cout << _tilesOnHand[i]->getLetter()<<endl;
 		}
@@ -120,9 +119,7 @@ using namespace std;
 					if(resolveBlanks && movecpy[i] == '?'){
 					_tilesOnHand[j]->useAs(actualUse);
 					}
-				
-				cerr <<i<<": "<< _tilesOnHand[j]->getLetter()<<endl;
-				
+								
 				//push it to the toMOve and delete the tile
 				_toMove.push_back(_tilesOnHand[j]);
 				_tilesOnHand.erase(_tilesOnHand.begin()+j);
@@ -132,7 +129,6 @@ using namespace std;
                 j++;
         	}
 		}
-		cerr << "the size of _tomove in Player.cpp: "<<_toMove.size()<<endl;
 	return _toMove;
 
 	}

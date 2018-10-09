@@ -138,7 +138,6 @@ using namespace std;
 		else{
 			throw invalid_argument ("NO SUCH TILES"); }
 
-		cerr << "the size of _tilestotake in Move.cpp: "<< _tilestotake.size()<<endl;
 
 		vector<pair<std::string, unsigned int>> words = board.getPlaceMoveResults(*this);
 		if (words.size() < 1){
@@ -177,9 +176,8 @@ using namespace std;
 	}
 
 	void PlaceMove::printNewWord(){
-		cout << "size of the new words "<<_newWords.size()<<endl;
 		for (size_t i = 0; i < _newWords.size();i++){
-			cout << _newWords[i] << "&";
+			cout << _newWords[i] << " ";
 		}
 	}
 
