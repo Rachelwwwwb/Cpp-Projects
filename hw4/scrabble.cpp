@@ -29,29 +29,34 @@ int main(int argc, char* argv[]){
 
     string line;
     while(getline(config,line)){
-        stringstream ss (line);
-        string command;
-        ss >> command;
+        string command = "";
+        string fileName;
+        for (size_t i = 0; i < line.size(); i++){
+            command += line[i];
+            if(line[i] == ':'){
+                size_t j= i+1;
+                while(line[j] == ' '){
+                j++;}
+                fileName = line.substr(j, line.size()-j);
+                break;
+            }
+        }
 
         if (command == "HANDSIZE:"){
-            ss >> handSize;
-            ss >> handSize;
+            handSize = stoi(fileName, 0, 10);
         }
         else if (command == "BOARD:"){
-            ss >> boardFile;
-            ss >> boardFile;
+            boardFile = fileName;
         }
         else if (command == "TILES:"){
-            ss >> bagFile;
-            ss >> bagFile;
+            bagFile = fileName;
+
         }
         else if (command == "DICTIONARY:"){
-            ss >> dictionaryFile;
-            ss >> dictionaryFile;
+            dictionaryFile = fileName;
         }
         else if (command == "SEED:"){
-            ss >> seed;
-            ss >> seed;
+            seed = stoi(fileName, 0, 10);
         }
     }
 
