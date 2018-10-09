@@ -46,13 +46,7 @@ public:
 	   By definition, if this function returns true, then takeTiles() would
 	   succeed.
 	 */
-	//"move" is string of char that the player wish to move
-	//check to see if the player has all the letters (num and letter)
-	//if resolve blanks is true
-		//set '?' if it has one (use useAs(char))
-	//if false, then the string is the letters need to be exchanged
-	//if all goes good, push them to the vector ready to move
-	bool hasTiles(std::string const & move, bool resolveBlanks) const;
+		bool hasTiles(std::string const & move, bool resolveBlanks) const;
 
 	void showHand();
 
@@ -72,10 +66,8 @@ public:
 	*/
 	std::vector<Tile*> takeTiles (std::string const & move, bool resolveBlanks);
 
-	// Adds all the tiles in the vector to the player's hand.
 	void addTiles (std::vector<Tile*> const & tilesToAdd);
 
-	//Add more public/protected/private functions/variables here.
 	void addScore (int num);
 
 	int getScore() const;
@@ -89,15 +81,8 @@ public:
 private:
 	std::string _name;
 	size_t _maxTiles;
-	//vector containing all tiles on the hand (AKA unused tiles) 
 	std::vector<Tile*> _tilesOnHand;
 	int _score;
-//	map <char, int> _words;
-//points of all unused tiles by now
-	//set<char> of letters that player has
-//map of <char, size_t>; the number of each letter that the player has
-//vector<Tile*> _tilesToBeTaken (move or exchange)
-//size_t number of tile needed to be exchanged
 
 };
 

@@ -1,4 +1,0 @@
-if illegal words, the ? should go back to ?
-which means the use is still ?
-when the start position has a tile one it
-the use of max num on hand

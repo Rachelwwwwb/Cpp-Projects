@@ -21,10 +21,6 @@ using namespace std;
 
 	std::ifstream boardFileStream(board_file_namey);
 
-	if(!boardFileStream)
-	{
-	   // throw FileException("BOARD");
-	}
     boardFileStream >> _columns >> _rows;
     boardFileStream >> _y >> _x;
 
@@ -84,28 +80,27 @@ using namespace std;
                 startCorrect = false;
                 isNextto = true;
             }
+        
+        if (_board[startY-1][startX-1]->isOccupied()){
+            m.getPlayer() -> addTiles(tileVector);
+            throw out_of_range ("THE FIRST IS OCCUPIED");
+        }
 
         size_t j = 0;
         //for each word  in the opposite direction
         for (size_t i  = 0; i < tileVector.size(); i++){
-            //if at least one letter is next to something
-            //if it is out of border
-            //check if it is placing on an empty square
-            
-            //if it is horizontal:
-            //check all the vertical words
-            //(x-1+i,y-1)
-            //one above: (x-1+i,y-2)
-
-            //tons of corner cases
+           
             int points = 0;;
             int wordMul = 1;
             string word = "";
             if (horizontal){
-                if (startX-1+j <= _columns-1){
+                if (startX-1+j > _columns-1){
+                    m.getPlayer() -> addTiles(tileVector);
+                    throw out_of_range ("OUT OF THE BOARD");
+                }
                 while (_board[startY-1][startX-1+j]->isOccupied()){
                     j++;
-                }}
+                }
                 //find the upper part of the word
                 for ( int upperhalf = 1 ; (int) startY-1-upperhalf >=0 ;upperhalf++){
                     if (startX-1+j < 0 && startY-1-upperhalf < 0) break;
@@ -120,6 +115,8 @@ using namespace std;
                     reverse(word.begin(),word.end());
                     //add the letter we want to put here
                     word += tileVector[i]->getUse();
+                    points += tileVector[i]->getPoints() * _board[startY-1][startX-1+j]->getLMult();
+                    wordMul *=  _board[startY-1][startX-1+j]->getWMult();
 
                 //then check the lower part of the word
                 for ( size_t lowerhalf = 1 ; startY-1+lowerhalf <= _rows-1 ;lowerhalf++){
@@ -142,10 +139,13 @@ using namespace std;
 
             //if vertical
             else{
-                if (startY-1+j <= _rows-1){
+                if (startY-1+j > _rows-1){
+                     m.getPlayer() -> addTiles(tileVector);
+                    throw out_of_range ("OUT OF THE BOARD");
+                }
                 while (_board[startY-1+j][startX-1]->isOccupied()){
                     j++;
-                }}
+                }
                 //As before, go left first
                  for (int leftHalf = 1 ; (int)startX-1-leftHalf >=0 ;leftHalf++){
                     if (!_board[startY-1+j][startX-1-leftHalf]->isOccupied())   break;
@@ -159,6 +159,9 @@ using namespace std;
                     reverse(word.begin(),word.end());
                     //add the letter we want to put here
                     word += tileVector[i]->getUse();
+                    points += tileVector[i]->getPoints() * _board[startY-1+j][startX-1]->getLMult();
+                    wordMul *= _board[startY-1+j][startX-1]->getWMult();
+
 
                 //then go to the right
                 for (size_t rightHalf = 1 ; startX-1+rightHalf <= _columns-1 ;rightHalf++){
@@ -192,14 +195,12 @@ using namespace std;
                 point += _board[startY-1][startX-1-leftSide]->getLMult()*_board[startY-1][startX-1-leftSide]->getScore();
                 wordMul *= _board[startY-1][startX-1-leftSide]->getWMult();
                 mainWord += _board[startY-1][startX-1-leftSide]->getLetter();
-                 cerr << "line 194: mainWord: "<<mainWord<<endl;
             }
 
-            cerr << "line 197: mainWord: "<<mainWord << "this"<<endl;
             //As we read the word from up to down, we need to reverse the order of the first half;
             reverse(mainWord.begin(),mainWord.end());
             //add all the letters we want to put here
-            cerr << "line 200: mainWord: "<<mainWord << "this"<<endl;
+
             size_t occupied  = 0;
             for (size_t i = 0; i < tileVector.size();i++){
                 if (startX-1+i+occupied > _columns-1){
@@ -274,21 +275,19 @@ using namespace std;
                 occupied++;
                 isNextto = true;
                 }
-
-                if (startX-1 == _x-1 && startY-1+i+occupied == _y-1){
-                   startCorrect = true;
-                }
-
-                if (!_board[_y-1][_x-1]->isOccupied() && !startCorrect){
-                //throw exceptions
-                m.getPlayer() -> addTiles(tileVector);
-                throw domain_error ("START POSITION");
-            }
                 mainWord += tileVector[i]->getUse();
                 point += tileVector[i]->getPoints()*_board[startY-1+i+occupied][startX-1]->getLMult();
                 wordMul *= _board[startY-1+i+occupied][startX-1]->getWMult();
-                cerr << "line 278: mainWord: "<<i<<": "<<mainWord<<endl;
-                cerr << "mainWord.size()" << mainWord.size()<<endl;
+
+                if (startX-1 == _x-1 && (int)startY-1 + (int)i + (int)occupied == (int)_y-1){
+                   startCorrect = true;
+                }
+                
+            }
+            if (!_board[_y-1][_x-1]->isOccupied() && !startCorrect){
+                //throw exceptions
+                m.getPlayer() -> addTiles(tileVector);
+                throw domain_error ("START POSITION");
             }
             size_t tail = startY-1+tileVector.size()+occupied-1;
             if (tail > _rows-1) {
@@ -311,6 +310,10 @@ using namespace std;
              if(!isNextto){
                 m.getPlayer() -> addTiles(tileVector);
                 throw range_error ("Not NEXT TO SOME LETTER");
+            }
+
+            for (size_t i = 0; i <  words.size();i++){
+                cout << i << " : " << words[i].first << ": "<< words[i].second << endl;
             }
 
     return words;

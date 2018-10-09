@@ -8,10 +8,6 @@ using namespace std;
 	   to read the word list. */
 	Dictionary::Dictionary (std::string dictionary_file_name){
         std::ifstream dicFileStream(dictionary_file_name);
-	    if(!dicFileStream)
-	    {
-		   // throw FileException("DICTIONARY");
-	    }
 
         while(!dicFileStream.eof()){
             string legalWord = "";

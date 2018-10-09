@@ -28,7 +28,6 @@ public:
 	   Case should not matter. Must run in O(logn) for the number of words in the dictionary. */
 	bool isLegalWord (std::string const & word) const;
 
-	//Add more public and private functions/variables here.
 private:
 	std::set <std::string> _dictionary;
 };

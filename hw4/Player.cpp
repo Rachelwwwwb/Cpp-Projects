@@ -44,12 +44,6 @@ using namespace std;
 		}
 	}
 
-	//"move" is string of char that the player wish to move
-	//check to see if the player has all the letters (num and letter)
-	//if resolve blanks is true
-		//set '?' if it has one (use useAs(char))
-	//if false, then the string is the letters need to be exchanged
-	//if all goes good, push them to the vector ready to move
 	bool Player::hasTiles(std::string const & move, bool resolveBlanks) const{
 	
 		//create a copy of move
@@ -57,12 +51,13 @@ using namespace std;
 		std::vector<Tile*> copyOfHand = _tilesOnHand;
 
         for (size_t i = 0; i < movecpy.size();i++){
-				//if it is a '?'
+				
 				//when there's a '?' and the move is place
 				if(resolveBlanks && movecpy[i] == '?'){
 				if (i+1 >= movecpy.size()) return false;
 				else if(movecpy[i+1] == '?') return false;
-				else{ // take away the letter behind it
+				else{ 
+					// take away the letter behind it
 					std::string firsthalf, secondhalf;
 					firsthalf = movecpy.substr(0,(int)i+1);
 					if ((unsigned int)i+2 < movecpy.size()){
@@ -127,6 +122,7 @@ using namespace std;
 					}
 				
 				cerr <<i<<": "<< _tilesOnHand[j]->getLetter()<<endl;
+				
 				//push it to the toMOve and delete the tile
 				_toMove.push_back(_tilesOnHand[j]);
 				_tilesOnHand.erase(_tilesOnHand.begin()+j);
@@ -145,13 +141,9 @@ using namespace std;
 	void Player::addTiles (std::vector<Tile*> const & tilesToAdd){
 		for (size_t i = 0; i < tilesToAdd.size();i++){
 		_tilesOnHand.push_back(tilesToAdd[i]);
-		/*char letter = tilesToAdd[i]->getLetter();
-		letter = toupper(letter);
-		_tilesOnHand.push_back(new Tile(letter,tilesToAdd[i]->getPoints()));*/
 		}
 	}
 
-	//Add more public/protected/private functions/variables here.
 	void Player::addScore (int num){
         _score += num;
     }
@@ -166,7 +158,9 @@ using namespace std;
 	}
 
 	bool Player::isEmpty() const{
-		return !_tilesOnHand.size();
+		if(_tilesOnHand.size() > 0)
+		return false;
+		else return true;
 	}
 
 	int Player::scoresInHand() const{

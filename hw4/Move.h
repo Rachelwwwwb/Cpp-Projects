@@ -65,16 +65,13 @@ public:
 
 	virtual ~Move();
 
-	//Add more public/protected/private functions/variables here.
 
 protected:
 
 	Player * _player;
 
-	// constructor -- only accessible to subclasses
 	Move(Player * player);
 
-	//string moveString
 
 };
 
@@ -96,12 +93,7 @@ public:
 	/* Executes this move, whichever type it is.
 	   This may throw exceptions; students: it's up to you to
 	   decide (and document) what exactly it throws*/
-	   //add an index or bool variable to show that this player has passed
-	   //so that when all players pass we can end the game
 	void execute(Board & board, Bag & bag, Dictionary & dictionary);
-	//check if the player has the word
-	//check if the bag is empty
-	//Add more public/protected/private functions/variables here.
 
 };
 
@@ -130,15 +122,13 @@ public:
 	   This may throw exceptions; students: it's up to you to
 	   decide (and document) what exactly it throws*/
 	void execute(Board & board, Bag & bag, Dictionary & dictionary);
-	//check if bag is 
-	//Add more public/protected/private functions/variables here.
+
 	private:
 	std::string _tileString;
 	std::vector<Tile*> _toAdd;
 
 };
 
-// represents a place move, where a player places one or more tiles onto the board.
 class PlaceMove : public Move
 {
 
@@ -151,12 +141,7 @@ public:
 	   must be followed by the letter it is to be used as.
 	*/
 	PlaceMove (size_t x, size_t y, bool horizontal, std::string tileString, Player * p);
-	//check if the square is empty; else throw exceptions
-	//check if the string is next to at least one letter
-	//maybe not here but check if the words are legal
-	//if anything is wrong, ask the user again and choose among three moves again
-	//which means need to going back to the move class
-	//check if it is the beginner player
+	
 
 	~PlaceMove();
 
@@ -170,20 +155,12 @@ public:
 	   Return value could be arbitrary for PASS moves. */
 	std::vector<Tile*> const & tileVector () const;
 
-	//void addScore()
 
 	/* Executes this move, whichever type it is.
 	   This may throw exceptions; students: it's up to you to
 	   decide (and document) what exactly it throws*/
 	void execute(Board & board, Bag & bag, Dictionary & dictionary);
-//check if physically feasible
-//board bacier
-//	std::vector<std::pair<std::string, unsigned int>> getPlaceMoveResults(const PlaceMove &m) const;
-//dictionary
-//	bool isLegalWord (std::string const & word) const;
-//board put words
-//	void executePlaceMove (const PlaceMove & m);
-//every word has to be used
+
 	size_t getStartx() const;
 
 	size_t getStarty() const;
@@ -196,9 +173,7 @@ public:
 
 	Player* getPlayer() const;
 
-	//Add more public/protected/private functions/variables here.
-	
-	//maybe bool horizontal???
+
 private:
 std::string _tileString;
 size_t _x;

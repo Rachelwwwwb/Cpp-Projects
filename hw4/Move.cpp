@@ -45,20 +45,14 @@ using namespace std;
 		return 0;
 	}
 
-
-	/* Executes this move, whichever type it is.
-	   This may throw exceptions; students: it's up to you to
-	   decide (and document) what exactly it throws*/
 	 Move::~Move(){
 		 return;}
-	//Add more public/protected/private functions/variables here.
 
 	Move::Move(Player * player){
 		_player = player;
 	}
 
 
-	/* Constructs a pass move. */
 	PassMove::PassMove(Player * player) : Move(player){
 		_player = player;
 	}
@@ -69,13 +63,6 @@ using namespace std;
 	
 	
 
-
-
-
-	/* Creates an EXCHANGE move, exchanging the tiles listed in the
-	   string (formatted according to the EXCHANGE command description)
-	   with new tiles from the bag.
-	   */
 	ExchangeMove::ExchangeMove(std::string tileString, Player * p):Move(p){
 		_tileString = tileString;
 		_player = p;
@@ -86,14 +73,8 @@ using namespace std;
 	}
 
 
-	/* Executes this move, whichever type it is.
-	   This may throw exceptions; students: it's up to you to
-	   decide (and document) what exactly it throws*/
 	void ExchangeMove::execute (Board & board, Bag & bag, Dictionary & dictionary){
-		if (bag.tilesRemaining() < _tileString.size()){
-			//throw exceptions here
-			//and some warnings here	
-		}
+
 		if (_player->hasTiles(_tileString,false)){
 			//put the tiles back in
 			std::vector<Tile*> toPutBack = _player->takeTiles(_tileString,false);
@@ -102,11 +83,9 @@ using namespace std;
 			_toAdd = bag.drawTiles((size_t)_tileString.size());
 			_player->addTiles(_toAdd);
 
-			/*std::set<Tile*> check = _player->getHandTiles();
-			cerr << "num of tiles on hand" << check.size()<<endl;
-			for (std::set<Tile*>::iterator it=check.begin(); it!=check.end(); ++it){
-				cerr << ": "<<*it;
-			}*/
+		}
+		else{
+			throw invalid_argument ("NO SUCH TILES"); 
 		}
 
 	}
@@ -130,12 +109,7 @@ using namespace std;
 		_tileString = tileString;
 		_newScore = 0;
 	}
-	//check if the square is empty; else throw exceptions
-	//check if the string is next to at least one letter
-	//maybe not here but check if the words are legal
-	//if anything is wrong, ask the user again and choose among three moves again
-	//which means need to going back to the move class
-	//check if it is the beginner player
+
 
 	PlaceMove:: ~PlaceMove(){
 	}
@@ -156,13 +130,13 @@ using namespace std;
 	}
 
 	void PlaceMove::execute(Board & board, Bag & bag, Dictionary & dictionary){
+		
 		//check if physically feasible
 		bool execute = true;
 		if(_player->hasTiles(_tileString,true)){
 			_tilestotake = _player->takeTiles(_tileString,true);}
 		else{
-			//throw bad_function_call ("non exixts letter");
-			cerr << "no such letters"<<endl; }
+			throw invalid_argument ("NO SUCH TILES"); }
 
 		cerr << "the size of _tilestotake in Move.cpp: "<< _tilestotake.size()<<endl;
 
