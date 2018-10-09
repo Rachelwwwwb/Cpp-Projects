@@ -194,6 +194,8 @@ public:
 
 	int getNewScore();
 
+	Player* getPlayer() const;
+
 	//Add more public/protected/private functions/variables here.
 	
 	//maybe bool horizontal???

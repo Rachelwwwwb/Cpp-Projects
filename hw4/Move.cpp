@@ -1,6 +1,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <set>
 #include "Tile.h"
 #include "Player.h"
@@ -30,8 +31,15 @@ using namespace std;
 			bool horizontal = true;
 			if (moveString[6] == '-') horizontal = true;
 			else if (moveString[6] == '|') horizontal = false;
-
-			Move* Place = new PlaceMove(moveString[8]-'0',moveString[10]-'0',horizontal,moveString.substr(12,moveString.size()-12),&p);
+			
+			istringstream ms (moveString);
+			string gabbage;
+			ms >> gabbage;
+			ms >> gabbage;
+			size_t x, y;
+			string word;
+			ms >> x >> y >> word;
+			Move* Place = new PlaceMove(y,x,horizontal,word,&p);
 			return Place;
 		}
 		return 0;
@@ -152,10 +160,17 @@ using namespace std;
 		bool execute = true;
 		if(_player->hasTiles(_tileString,true)){
 			_tilestotake = _player->takeTiles(_tileString,true);}
+		else{
+			//throw bad_function_call ("non exixts letter");
+			cerr << "no such letters"<<endl; }
 
 		cerr << "the size of _tilestotake in Move.cpp: "<< _tilestotake.size()<<endl;
 
 		vector<pair<std::string, unsigned int>> words = board.getPlaceMoveResults(*this);
+		if (words.size() < 1){
+			throw invalid_argument ("NO WORD FORMED");
+		}
+
 		for (size_t i = 0; i < words.size(); i++){
 			_newWords.push_back(words[i].first);
 			_newScore += words[i].second;
@@ -188,8 +203,9 @@ using namespace std;
 	}
 
 	void PlaceMove::printNewWord(){
+		cout << "size of the new words "<<_newWords.size()<<endl;
 		for (size_t i = 0; i < _newWords.size();i++){
-			cout << _newWords[i] << " ";
+			cout << _newWords[i] << "&";
 		}
 	}
 
@@ -197,4 +213,6 @@ using namespace std;
 		return _newScore;
 	}
 
-
+	Player* PlaceMove::getPlayer() const{
+		return _player;
+	}

@@ -90,12 +90,11 @@ int main(int argc, char* argv[]){
     //the condition that the game ends
     while(contPlay && pass_num < numOfPlayers){
         //each individual get to choose
+        pass_num = 0;
         for (size_t i = 0; i < numOfPlayers; i++){
             bool ifcontinue = true;
         while(ifcontinue){
-            ifcontinue = false;
-             myBoard.printBoard();
-
+            ifcontinue = false; 
             printer.printBoard(myBoard);
             printer.printHand(*playerList[i]);
             
@@ -133,8 +132,13 @@ int main(int argc, char* argv[]){
                    ifcontinue = true;
                    cout << "Out of range: "<< o.what() <<endl;
                }
+              /* catch (bad_function_call& s){
+                   cout <<"letter does not exist" << s.what() << endl;
+               }*/
                catch (invalid_argument& i){
                     ifcontinue = true;
+                    cout << "Words formed: ";
+                    place->printNewWord();
                    cout << "Invalid Word: " << i.what() << endl;
                }
                catch (length_error& l){
@@ -200,7 +204,7 @@ int main(int argc, char* argv[]){
 
     for (size_t i = playerList.size()-1; i > 0; i--){
         for (size_t j = 0; j < i; j++){
-            if (playerList[j]->getScore() > playerList[j+1]->getScore()){
+            if (playerList[j+1]->getScore() > playerList[j]->getScore()){
                     Player* tmp = playerList[j];
                     playerList[j] = playerList[j+1];
                     playerList[j+1] = tmp;

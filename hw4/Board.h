@@ -67,9 +67,7 @@ public:
 
 	/* Returns the number of columns of the board.*/
 	size_t getColumns() const;
-
-	void printBoard() const;
-
+	
 private:
 size_t _rows;
 size_t _columns;
