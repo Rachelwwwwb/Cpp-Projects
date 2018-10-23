@@ -33,6 +33,6 @@ is picked and so on.
 
 Problem 4d:
 The runtime analysis of the k-way templated Merge Sort is in the runtime.pdf.
-When k = n, it resembles the insertion sort: selection the first unsorted element, sort
+When k = n, it resembles the selection sort: selection the first unsorted element, sort
 it and then the unsorted element index ++;
 In this case, the run time would be n^2.
