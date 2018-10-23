@@ -7,7 +7,7 @@ int main(){
     string command;
     stack<char> stk;
     bool isLegal = true;
-    cin >> command;
+    getline(std::cin, command);
     for (size_t i = 0; i < command.size();i++){
         if (command[i] != 'e' && command[i] != 'w'&& command[i] != 'n'&& command[i] != 's'){
             isLegal = false;
@@ -15,8 +15,8 @@ int main(){
         if(!stk.empty()){
             if ((stk.top() == 'w' && command[i] == 'e') || (stk.top() == 'e' && command[i] == 'w') ||
                 (stk.top() == 'n' && command[i] == 's') || (stk.top() == 's' && command[i] == 'n'))
-                stk.pop();
-                continue;}
+                {stk.pop();     continue;}
+        }
         stk.push(command[i]);
     }
     if(isLegal){

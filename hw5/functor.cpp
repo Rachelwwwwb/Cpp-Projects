@@ -3,12 +3,6 @@
 
 using namespace std;
 
-template <class Comparator>
-void DoStringCompare(const std::string& s1, const std::string& s2, Comparator comp)
-{
-  cout << comp(s1, s2) << endl;  // calls comp.operator()(s1,s2);
-}
-
 int main() {
   string s1 = "Blue";
   string s2 = "Red";

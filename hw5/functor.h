@@ -28,10 +28,10 @@ struct NumStrComp{
         lhsVal += lhs[i] - '0';
       }
       else if (lhs[i] >= 'a' && lhs[i] <= 'z'){
-        lhsVal += lhs[i] - 'a';
+        lhsVal += lhs[i] - 'a' + 10;
       }
       else if (lhs[i] >= 'A' && lhs[i] <= 'Z'){
-        lhsVal += lhs[i] - 'A';
+        lhsVal += lhs[i] - 'A' + 10;
       }
     } 
 
@@ -40,10 +40,10 @@ struct NumStrComp{
         rhsVal += rhs[i] - '0';
       }
       else if (rhs[i] >= 'a' && rhs[i] <= 'z'){
-        rhsVal += rhs[i] - 'a';
+        rhsVal += rhs[i] - 'a' + 10;
       }
       else if (rhs[i] >= 'A' && rhs[i] <= 'Z'){
-        rhsVal += rhs[i] - 'A';
+        rhsVal += rhs[i] - 'A' + 10;
       }
     } 
     if (lhsVal != rhsVal){
@@ -59,5 +59,5 @@ struct NumStrComp{
 template <class Comparator>
 void DoStringCompare(const std::string& s1, const std::string& s2, Comparator comp)
 {
-  cout << comp(s1, s2) << endl;  // calls comp.operator()(s1,s2);
+  std::cout << comp(s1, s2) << std::endl;  // calls comp.operator()(s1,s2);
 }
