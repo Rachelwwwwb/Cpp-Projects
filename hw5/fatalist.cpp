@@ -17,7 +17,6 @@ int compareHelper (std::pair<int,int> stu1, std::pair<int,int> stu2){
 void Merge(std::vector<std::pair<int,int>>& grades, int l, int r, int m){
     int i = l, j = m+1, k = 0;
     std::vector <std::pair<int,int>> temp;
-    //for (int round = 0; round < r-l+1; round++){
     while (i <= m || j <= r){
         if (i <= m && (j > r || grades[i].first > grades[j].first)){
             temp.push_back(grades[i]);

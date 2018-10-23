@@ -9,15 +9,13 @@ void Merge(std::vector <T>& myArray, const std::vector<int> indices,Comparator c
         newindices.push_back(indices[i]);
     }
     std::vector <T> tmp;
-    //bool toCont = true;
-    //while (toCont){
+   
     for (int t = 0; t < indices[indices.size()-1] - indices[0] ; t++){
         //keep track of the first element
         //and initiate the minimum to it
         //update after each round
         T min;
         bool findMin = false;
-        //have problem!!!
         size_t numGroup;
 
         for (size_t num = 0; num < newindices.size()-1; num++){
@@ -38,17 +36,6 @@ void Merge(std::vector <T>& myArray, const std::vector<int> indices,Comparator c
         }
         tmp.push_back(min);
         newindices[numGroup] ++;
-        //if (numGroup)
-        
-        //check at the end of the loop
-        //everything is sorted and need to stop
-        /*toCont = false;
-        for (size_t count = 0; count < indices.size()-1; count++){
-            if (newindices[count] < indices[count+1]){
-                toCont = true;        
-                break;
-            }
-        }*/
     }
     size_t j = 0;
     for (size_t i = indices[0]+1; i < indices[0]+1+tmp.size();i++){
@@ -61,10 +48,6 @@ void Merge(std::vector <T>& myArray, const std::vector<int> indices,Comparator c
 template <class T, class Comparator>
 void mergeSortHelper(int r, int l, std::vector <T>& myArray, Comparator comp, int k){
      //base case
-    /*if (r-l+1 < k)  {
-        mergeSortHelper(r,l,myArray,comp,2);
-        return;
-    }*/
     if(r < l){
     size_t remaining = (l-r+1) %k;
     size_t num = (l-r+1)/k;
@@ -81,7 +64,6 @@ void mergeSortHelper(int r, int l, std::vector <T>& myArray, Comparator comp, in
     }
 
     for (size_t i = 0; i < (size_t)std::min(k, l-r+1); i++){
-       // std::cout << "first index: " << indices[0] << " last index" << indices[indices.size()-1] <<" and the size: "<< indices.size()<<std::endl;
         mergeSortHelper(indices[i]+1, indices[i+1], myArray, comp, k);
     }
     Merge< T, Comparator>(myArray,indices,comp);
@@ -92,7 +74,4 @@ void mergeSortHelper(int r, int l, std::vector <T>& myArray, Comparator comp, in
 template <class T, class Comparator>
 void mergeSort (std::vector <T>& myArray, int k, Comparator comp){
     mergeSortHelper(0,myArray.size()-1,myArray,comp,k);
-    /*for (size_t i = 0; i < myArray.size();i++){
-        std::cerr << myArray[i] << "  ";
-    }*/
 }
