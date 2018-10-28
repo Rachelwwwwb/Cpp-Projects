@@ -57,10 +57,15 @@ int main(int argc, char* argv[]){
         q.push(start);
         visited[start->x][start->y] = true;
         int currentCount = 1;
+        int contX = 0;
+        int contY = 0;
 
+        //if the queue is not empty
         while (!q.empty()){
             Node*head = q.front();
 		    q.pop();
+            //search the up, down, left and right of the node
+            //and test if it is out of border
             if(head->x+1 < rows){
 		        if (visited[head->x+1][head->y] == false && graph[head->x+1][head->y]->letter == head->letter){
 			        q.push(graph[head->x+1][head->y]);
@@ -99,19 +104,41 @@ int main(int argc, char* argv[]){
         if (currentCount > largestCount) 
             largestCount = currentCount;
 
+        //search to find the next starting node
+        //the search starts from the last start
         bool toBreak = false;
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < columns; j++){
-                if (visited[i][j] == false){
-                    start = graph[i][j];
-                    TBC = true;
-                    currentCount = 0;
-                    toBreak = true;
-                    break;
+        for (int i = contX; i < rows; i++){
+            if (i == contX){
+                for (int j = contY; j < columns; j++){
+                        if (visited[i][j] == false){
+                        start = graph[i][j];
+                        contX = i;
+                        contY = j;
+                        TBC = true;
+                        currentCount = 0;
+                        toBreak = true;
+                        break;
+                        }
+                if (toBreak) break;
                 }
-            if (toBreak) break;
             }
-        if (toBreak) break;
+            if (toBreak) break; 
+
+            else{
+                for (int j = 0; j < columns; j++){
+                    if (visited[i][j] == false){
+                        start = graph[i][j];
+                        contX = i;
+                        contY = j;
+                        TBC = true;
+                        currentCount = 0;
+                        toBreak = true;
+                        break;
+                    }
+                if (toBreak) break;
+            }
+                if (toBreak) break;
+            }
         }
     }
 
