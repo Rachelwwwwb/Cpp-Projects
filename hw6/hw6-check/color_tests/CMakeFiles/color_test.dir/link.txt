@@ -1,0 +1,1 @@
+/usr/bin/c++    -Wall -g3 -O0   CMakeFiles/color_test.dir/color_utils.cpp.o CMakeFiles/color_test.dir/color_tests.cpp.o  -o color_test ../testing_utils/libtesting_utils.a /usr/lib/libgtest.a ../testing_utils/kwsys/libkwsys.a ../testing_utils/libperf/libperf.a -lpthread /usr/lib/libgtest_main.a 

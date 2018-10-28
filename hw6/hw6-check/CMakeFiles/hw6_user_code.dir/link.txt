@@ -1,0 +1,2 @@
+/usr/bin/ar qc libhw6_user_code.a  "CMakeFiles/hw6_user_code.dir/home/cs104/cs104~/hw-wenbeiwa/hw6/search.cpp.o" "CMakeFiles/hw6_user_code.dir/home/cs104/cs104~/hw-wenbeiwa/hw6/coloring.cpp.o"
+/usr/bin/ranlib libhw6_user_code.a
