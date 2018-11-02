@@ -67,6 +67,7 @@ CMakeFiles/user_makefile: /home/cs104/cs104~/hw-wenbeiwa/hw6/search
 /home/cs104/cs104~/hw-wenbeiwa/hw6/search: testing_utils/runtime_evaluator.cpp
 /home/cs104/cs104~/hw-wenbeiwa/hw6/search: testing_utils/random_generator.cpp
 /home/cs104/cs104~/hw-wenbeiwa/hw6/search: /home/cs104/cs104~/hw-wenbeiwa/hw6/coloring.cpp
+/home/cs104/cs104~/hw-wenbeiwa/hw6/search: /home/cs104/cs104~/hw-wenbeiwa/hw6/test.cpp
 /home/cs104/cs104~/hw-wenbeiwa/hw6/search: /home/cs104/cs104~/hw-wenbeiwa/hw6/search.cpp
 /home/cs104/cs104~/hw-wenbeiwa/hw6/search: search_tests/search_utils.h
 /home/cs104/cs104~/hw-wenbeiwa/hw6/search: color_tests/color_utils.h

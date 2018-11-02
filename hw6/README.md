@@ -1,0 +1,1 @@
+Question 3 is written in the minheap.pdf.
