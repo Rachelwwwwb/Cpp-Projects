@@ -218,19 +218,19 @@ TEST_F (MinHeapString, empty) {
 
 INSTANTIATE_TEST_CASE_P(MinHeapSortVaryingD, MinHeapSort, ::testing::Range(2, 104));
 
-/* Perform heap sort with 100 elements and k-ary heaps in steps of 1 */
+ /*Perform heap sort with 100 elements and k-ary heaps in steps of 1 */
 TEST_P (MinHeapSort, HeapSort100) {
   SetUp(100);
   sortTest();
 }
 
-/* Perform heap sort with 10000 elements and k-ary heaps in steps of 3 */
+ /*Perform heap sort with 10000 elements and k-ary heaps in steps of 3 */
 TEST_P (MinHeapSort, HeapSort543) {
   SetUp(543);
   sortTest();
 }
 
-/* Perform heap sort with 1000 elements and k-ary heaps in steps of 3 */
+ /*Perform heap sort with 1000 elements and k-ary heaps in steps of 3 */
 TEST_P (MinHeapSort, HeapSort1000) {
   SetUp(1000);
   sortTest();

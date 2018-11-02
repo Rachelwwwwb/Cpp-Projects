@@ -50,7 +50,7 @@
          Node<T>* toAdd = new Node<T>(item,priority);
          if(heap.size() == 0) head = toAdd;
          else if (((int)heap.size()-1-1)/d >= 0) {
-         toAdd->_parent = heap[((int)heap.size()-1-1)/d];}
+         toAdd->_parent = heap[((int)heap.size()-1)/d];}
           heap.push_back(toAdd);
 
          while (toAdd != head){
@@ -84,31 +84,40 @@
           head->_priority = heap[(int)heap.size()-1]->_priority;
           head->_item = heap[(int)heap.size()-1]->_item;
           delete heap[(int)heap.size()-1];
-          heap[(int)heap.size()-1] = NULL;
+          heap.pop_back();
+          //heap[(int)heap.size()-1] = NULL;
           
           Node<T>* newHead = head;
-          int numSwap = 0;
           //move the new head to its position
           //the loop should stop when it is a leaf node
           //and record the new node
-          while (head->_children.size() != 0){
+          
+          //to find out the index of head
+          int headPos = 0;
+          while (headPos*d + 1 <= (int)heap.size()-1){
             //find the smallest children of the head
-            int index = 0;
-            int smallest = head->_children[0]->_priority;
-            for (int i = 1; i < (int) head->_children.size();i++){
-                if (head->_children[i]->_priority < smallest){
+            int smallest = heap[headPos*d + 1]->_priority;
+            int index = 1;
+            int numOfChild;
+            if (headPos*d + d <= (int)heap.size()-1) numOfChild = d;
+            else numOfChild = (int)heap.size() - (headPos*d + 1);
+            for (int i = 1; i <= numOfChild;i++){
+                if (heap[headPos * d + i]->_priority < smallest){
                   index = i;
-                  smallest = head->_children[i]->_priority;
+                  smallest = heap[headPos * d + i]->_priority;
                 }
             }
-            int tmpPro = head->_children[index]->_priority;
-            T tmpItem = head->_children[index]->_item;
-            head->_children[index]->_priority = head->_priority;
-            head->_children[index]->_item = head->_item;
+            if (head->_priority <= smallest)  break;
+            else{
+            int tmpPro = heap[headPos * d + index]->_priority;
+            T tmpItem = heap[headPos * d + index]->_item;
+            heap[headPos * d + index]->_priority = head->_priority;
+            heap[headPos * d + index]->_item = head->_item;
             head->_item = tmpItem;
             head->_priority = tmpPro;
-            head = head->_children[index];
-            numSwap ++;
+            head = heap[headPos * d + index];
+            headPos = headPos * d + index;
+            }
           }
             head = newHead;
        }
@@ -124,8 +133,9 @@
        }
          /* returns true iff there are no elements on the heap. */
 
+        
         const T& parent (int i){
           return heap[i]->_parent->_item;
         }
-
+        
   };
