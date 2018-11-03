@@ -1,4 +1,0 @@
-# Hashes of file build rules.
-e407ab8f6bb79ba5a8efa733e4df42f5 /home/cs104/cs104~/hw-wenbeiwa/hw6/search
-4698eed38dab8e760305d625ed98f800 CMakeFiles/check
-3edf1436b95103b756aa24570e7b5699 CMakeFiles/user_makefile

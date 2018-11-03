@@ -16,7 +16,7 @@ struct Node{
     }
 };
 
-bool coloring(vector<vector<int>> adjacency_matrix, vector<int>& color, int index) 
+bool coloring(vector<vector<int> > adjacency_matrix, vector<int>& color, int index) 
 { 
     if (index == (int)adjacency_matrix.size()) return true; 
     for (int color_index = 1; color_index <= 4; color_index++) 
@@ -52,7 +52,7 @@ int main(int argc, char* argv[]){
     ifile >> blocks >> rows >> columns;
 
     //build an adjacency matrix
-    vector<vector<int>> adjacency_matrix;
+    vector<vector<int> > adjacency_matrix;
     for (int i = 0; i < blocks; i++){
         vector<int> tmp;
         adjacency_matrix.push_back(tmp);
@@ -61,8 +61,8 @@ int main(int argc, char* argv[]){
         }
     }
 
-    vector<vector<Node*>> graph;
-    vector<vector<bool>> visited;
+    vector<vector<Node*> > graph;
+    vector<vector<bool> > visited;
 
     for (int i = 0; i < rows; i++){
         vector<Node*> graphtmp;

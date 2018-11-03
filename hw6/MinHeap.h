@@ -23,10 +23,7 @@
       std::vector<Node<T>*> heap; 
       int d;
       Node<T>* head;
-      // whatever you need to naturally store things.
-      // You may also add helper functions here.
-
-
+      
 
      public:
        MinHeap (int d){
@@ -35,17 +32,13 @@
           head = NULL;
         }
        }
-       /* Constructor that builds a d-ary Min Heap
-          This should work for any d >= 2,
-          but doesn't have to do anything for smaller d.*/
-       //template <class T>
+       
        ~MinHeap (){
          for (int i = 0; i < (int) heap.size(); i++){
            delete heap[i];
          }
        }
       
-      //template <T>
        void add (T item, int priority){
          Node<T>* toAdd = new Node<T>(item,priority);
          if(heap.size() == 0) head = toAdd;
@@ -68,16 +61,12 @@
           }
          }
        }
-         /* adds the item to the heap, with the given priority. */
-      //template <T>
+         
        const T & peek () const{
         if (heap.size() == 0)  throw std::length_error ("not access to head!");
         return head->_item;
        }
-         /* returns the element with smallest priority.  
-            Break ties however you wish.  
-            Throws an exception if the heap is empty. */
-      //template <T>
+        
        void remove (){
           if (heap.size() == 0)  throw std::out_of_range ("The heap is empty!");
           //swap the first node with the last node
@@ -91,8 +80,6 @@
           //move the new head to its position
           //the loop should stop when it is a leaf node
           //and record the new node
-          
-          //to find out the index of head
           int headPos = 0;
           while (headPos*d + 1 <= (int)heap.size()-1){
             //find the smallest children of the head
@@ -121,21 +108,10 @@
           }
             head = newHead;
        }
-         /* removes the element with smallest priority.
-            Break ties however you wish.
-            Throws an exception if the heap is empty. */
-
-
-       //template <T>
+        
        bool isEmpty (){
          if (heap.size() == 0) return true;
          else return false;
        }
-         /* returns true iff there are no elements on the heap. */
-
-        
-        const T& parent (int i){
-          return heap[i]->_parent->_item;
-        }
         
   };

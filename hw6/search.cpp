@@ -33,6 +33,7 @@ int main(int argc, char* argv[]){
     vector<vector<Node*>> graph;
     vector<vector<bool>> visited;
 
+    //store the whole graph
     for (int i = 0; i < rows; i++){
         vector<Node*> graphtmp;
         vector <bool> visittmp;
@@ -74,7 +75,7 @@ int main(int argc, char* argv[]){
 		        }
             }
 
-            if (head->x-1 > 0){
+            if (head->x-1 >= 0){
                 if (visited[head->x-1][head->y] == false && graph[head->x-1][head->y]->letter == head->letter){
 			        q.push(graph[head->x-1][head->y]);
 			        visited[head->x-1][head->y] = true;
@@ -90,7 +91,7 @@ int main(int argc, char* argv[]){
 		        }
             }
 
-            if (head->y-1 > 0){
+            if (head->y-1 >= 0){
                 if (visited[head->x][head->y-1] == false && graph[head->x][head->y-1]->letter == head->letter){
 			        q.push(graph[head->x][head->y-1]);
 			        visited[head->x][head->y-1] = true;
