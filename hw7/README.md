@@ -1,0 +1,1 @@
+In assignment 7, I dealt with all different kinds of trees. 
