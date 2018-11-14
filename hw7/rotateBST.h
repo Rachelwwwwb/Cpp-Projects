@@ -125,16 +125,7 @@ void rotateBST<Key, Value>::leftRotate(Node<Key, Value>* r){
 
     if(BinarySearchTree<Key, Value>::mRoot == r)  BinarySearchTree<Key, Value>::mRoot = y;
    
-   /*
-    std::cout << BinarySearchTree<Key, Value>::mRoot->getKey()<<std::endl;
-    std::cout << BinarySearchTree<Key, Value>::mRoot->getLeft()->getKey()<<std::endl;
-    std::cout << BinarySearchTree<Key, Value>::mRoot->getRight()->getKey()<<std::endl;
-    std::cout << BinarySearchTree<Key, Value>::mRoot->getRight()->getLeft()->getKey()<<std::endl;
-    std::cout << BinarySearchTree<Key, Value>::mRoot->getRight()->getRight()->getKey()<<std::endl;
-    std::cout << BinarySearchTree<Key, Value>::mRoot->getRight()->getLeft()->getLeft()->getKey()<<std::endl;
-    std::cout << BinarySearchTree<Key, Value>::mRoot->getRight()->getLeft()->getRight()->getKey()<<std::endl;
 
-*/
 }
 
 
@@ -231,47 +222,33 @@ void rotateBST<Key, Value>::rightRotate(Node<Key, Value>* r){
 
 template <typename Key, typename Value>
  bool rotateBST<Key, Value>::sameKeys(const rotateBST<Key, Value>& t2) const{
-    //promote all the keys into a set 
-    std::set<Key> ownKeys, otherKeys;
-    
+
     if (BinarySearchTree<Key, Value>::mRoot == NULL && t2.BinarySearchTree<Key, Value>::mRoot == NULL)	return true;
     else if (BinarySearchTree<Key, Value>::mRoot == NULL || t2.BinarySearchTree<Key, Value>::mRoot == NULL) return false;
 	
-    std::queue<Node<Key, Value>*> q1;
-    std::queue<Node<Key, Value>*> q2;
-    Node<Key, Value>* tmp1 = BinarySearchTree<Key, Value>::mRoot;
-    Node<Key, Value>* tmp2 = t2.BinarySearchTree<Key, Value>::mRoot;
-	
-    q1.push(tmp1);
-	while (!q1.empty()){
-		tmp1 = q1.front();
-		q1.pop();
-		if (tmp1->getLeft() != NULL)	q1.push(tmp1->getLeft());
-		if (tmp1->getRight() != NULL)	q1.push(tmp1->getRight());
-		ownKeys.insert(tmp1->getKey());
-	}
-
-    while (!q2.empty()){
-		tmp2 = q2.front();
-		q2.pop();
-		if (tmp2->getLeft() != NULL)	q1.push(tmp2->getLeft());
-		if (tmp2->getRight() != NULL)	q1.push(tmp2->getRight());
-		otherKeys.insert(tmp2->getKey());
-	}
-
-    for (std::set<Key>::iterator it = ownKeys.begin(); it != ownKeys.end(); ++it){
-        if (otherKeys.find(it) == otherKeys.end())  return false;
-        ownKeys.erase(it);
-        otherKeys.erase(it);
-    }
-    if (!ownKeys.empty()||!otherKeys.empty())   return false;
-    
+    typename BinarySearchTree<Key, Value>::iterator t2it = t2.begin();
+    for (typename BinarySearchTree<Key, Value>::iterator it = this->begin(); it != this->end(); ++it){
+        if(t2it == t2.end())    return false;
+        if(it->first != t2it->first)  return false;
+        ++t2it;
+        }
+    if (t2it != t2.end())   return false;
     return true;
-
-
  }
  
  template <typename Key, typename Value>
  void rotateBST<Key, Value>::transform(rotateBST<Key, Value>& t2) const{
+    //if they don't have the same key, do nothing
+    if (!this->sameKeys(t2)) return;
+    //continuing to do the right rotation, until it becomes linked list
+    while (t2.BinarySearchTree<Key, Value>::mRoot->getLeft() != NULL){
+        t2.rightRotate(t2.BinarySearchTree<Key, Value>::mRoot);
+    }
+
+    //check to see if it's a linked list
+    Node<Key, Value>* tmp = t2.BinarySearchTree<Key, Value>::mRoot;
+    while (tmp->getRight() != NULL){
+        if (tmp->getLeft() != NULL) std::cerr << tmp->getKey()<<" has a left child!!" <<std::endl;
+    }
 
  }
