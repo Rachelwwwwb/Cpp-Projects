@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/cs104/cs104~/hw-wenbeiwa/hw7/avlbst.h
+iostream
+-
+cstdlib
+-
+string
+-
+rotateBST.h
+/home/cs104/cs104~/hw-wenbeiwa/hw7/rotateBST.h
+
+/home/cs104/cs104~/hw-wenbeiwa/hw7/hw7_api_check/avl_checker.cpp
+avlbst.h
+-
+string
+-
+
+/home/cs104/cs104~/hw-wenbeiwa/hw7/rotateBST.h
+iostream
+-
+

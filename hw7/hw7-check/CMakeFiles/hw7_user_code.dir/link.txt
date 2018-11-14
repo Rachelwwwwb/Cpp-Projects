@@ -1,0 +1,2 @@
+/usr/bin/ar qc libhw7_user_code.a  
+/usr/bin/ranlib libhw7_user_code.a

@@ -1,0 +1,1 @@
+/usr/bin/c++    -Wall -g3 -O0   CMakeFiles/rotate_checker.dir/rotate_checker.cpp.o  -o compile_test_results_dont_run_these/rotate_checker 

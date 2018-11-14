@@ -1,0 +1,1 @@
+/usr/bin/c++    -Wall -g3 -O0   CMakeFiles/bst_checker.dir/bst_checker.cpp.o  -o compile_test_results_dont_run_these/bst_checker 
