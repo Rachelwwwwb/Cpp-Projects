@@ -1,11 +1,12 @@
 #include "bst.h"
+#include "rotateBST.h"
 #include <iostream>
 #include <exception>
 
 using namespace std;
 
 int main(){
-    BinarySearchTree <int,string> binary;
+    rotateBST <int,string> binary;
 
 
     pair<int,string> pair2;
@@ -52,14 +53,13 @@ int main(){
     pair4.first = 4;
     pair4.second = "ddd";
     binary.insert(pair4);*/
-
-    binary.remove(10);
-
+    Node<int, string>* tmp = binary.internalFind(10);
+    cerr<<"this is ok"<<endl;
     
 
 
     //cerr << "over"<<endl;
-    binary.printTree(binary.getRoot());
+    //binary.printTree(binary.getRoot());
     cout<< "--------------------------"<<endl;
     binary.print();
 

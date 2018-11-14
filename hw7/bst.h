@@ -251,7 +251,6 @@ class BinarySearchTree
 		iterator find(const Key& key) const;
 
 	protected:
-		Node<Key, Value>* internalFind(const Key& key) const; //TODO
 		Node<Key, Value>* getSmallestNode() const; //TODO
 		void printRoot (Node<Key, Value>* root) const;
 
@@ -260,6 +259,9 @@ class BinarySearchTree
 
 	public:
 		void print() {this->printRoot(this->mRoot);}
+		//should be protected
+		//move here for debugging use
+		Node<Key, Value>* internalFind(const Key& key) const; //TODO
 
 };
 
@@ -606,7 +608,7 @@ void BinarySearchTree<Key, Value>::clear()
 	while (!q.empty()){
 		mRoot = q.front();
 		q.pop();
-
+		std::cerr << mRoot->getKey()<<std::endl;
 		if (mRoot->getLeft() != NULL)	q.push(mRoot->getLeft());
 		if (mRoot->getRight() != NULL)	q.push(mRoot->getRight());
 		delete mRoot;
