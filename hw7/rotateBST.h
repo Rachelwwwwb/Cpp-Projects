@@ -8,6 +8,7 @@ class rotateBST : public BinarySearchTree <Key, Value>
 {
     private:
         int height(Node<Key, Value>* root) const;
+        void PreOrderRotate(Node<Key, Value>* root1, Node<Key, Value>* root2, const rotateBST<Key, Value>& t1, rotateBST<Key, Value>& t2) const;
     protected:
         void leftRotate(Node<Key, Value>* r);
         void rightRotate(Node<Key, Value>* r);
@@ -45,6 +46,27 @@ void rotateBST<Key, Value>::leftRotate(Node<Key, Value>* r){
 
     if(r->getRight() == NULL)   return;
     y = r->getRight();
+
+     //the rotation will only be on two nodes
+    //std::cerr << r->getLeft()->getLeft() << r->getLeft()->getRight()<<std::endl;
+    if(r->getRight()->getLeft() == NULL && r->getRight()->getRight() == NULL){
+        y->setParent(r->getParent());
+        if(r->getParent() != NULL){
+            if (r->getParent()->getKey() > r->getKey()) r->getParent()->setLeft(y);
+            else    r->getParent()->setRight(y);
+        } 
+        if(y->getLeft() != NULL){
+            y->getLeft()->setParent(r);
+            r->setRight(y->getLeft());
+        }
+        else{
+            r->setRight(NULL);
+        }
+        y->setLeft(r);
+        r->setParent(y);
+        if(r == BinarySearchTree<Key, Value>::mRoot)    BinarySearchTree<Key, Value>::mRoot = y;
+        return;
+    }
 
     if(y->getLeft() != NULL && y->getRight() != NULL){
         if(height(y->getLeft()) > height(y->getRight())){
@@ -139,6 +161,26 @@ void rotateBST<Key, Value>::rightRotate(Node<Key, Value>* r){
     if(r->getLeft() == NULL)   return;
     y = r->getLeft();
 
+    //the rotation will only be on two nodes
+    //std::cerr << r->getLeft()->getLeft() << r->getLeft()->getRight()<<std::endl;
+    if(r->getLeft()->getLeft() == NULL && r->getLeft()->getRight() == NULL){
+        y->setParent(r->getParent());
+        if(r->getParent() != NULL){
+            if (r->getParent()->getKey() > r->getKey()) r->getParent()->setLeft(y);
+            else    r->getParent()->setRight(y);
+        } 
+        if(y->getRight() != NULL){
+            y->getRight()->setParent(r);
+            r->setLeft(y->getRight());
+        }
+        else{
+            r->setLeft(NULL);
+        }
+        y->setRight(r);
+        r->setParent(y);
+        if(r == BinarySearchTree<Key, Value>::mRoot)    BinarySearchTree<Key, Value>::mRoot = y;
+        return;
+    }
     if(y->getRight() != NULL && y->getLeft() != NULL){
         if(height(y->getRight()) > height(y->getLeft())){
             x = y->getRight();
@@ -187,11 +229,11 @@ void rotateBST<Key, Value>::rightRotate(Node<Key, Value>* r){
         y = x;
         x = y->getLeft();
     //std::cout << BinarySearchTree<Key, Value>::mRoot->getRight()->getLeft()->getLeft()<<std::endl;
-   
+   /*
     std::cout << "r: "<<r->getKey() << std::endl;
     std::cout << "y: "<<y->getKey() << std::endl;
     std::cout << "x: "<<x->getKey() << std::endl;
-    
+    */
     } 
 
     //do the zigzig left rotation
@@ -235,20 +277,63 @@ template <typename Key, typename Value>
     if (t2it != t2.end())   return false;
     return true;
  }
+
+ template <typename Key, typename Value>
+void rotateBST<Key, Value>::PreOrderRotate(Node<Key, Value>* root1, Node<Key, Value>* root2, const rotateBST<Key, Value>& t1, rotateBST<Key, Value>& t2) const {
+	
+    if (root1 == root2 && root2 == NULL)	return;
+    while (root1->getKey() != root2 ->getKey()) {
+        if (root2->getRight() != NULL && root2->getLeft() != NULL){
+            if (root2->getKey() > root1->getKey()){
+                t2.rightRotate(root2);
+            }
+            else{
+                t2.leftRotate(root2);
+            }
+        }
+        else if (root2->getLeft() == NULL)
+        t2.leftRotate(root2);
+        else if (root2->getRight() == NULL)
+        t2.rightRotate(root2);
+        
+        root2 = root2->getParent();
+    }
+	if(root2->getLeft() != NULL) 
+        PreOrderRotate(root1->getLeft(), root2->getLeft(), t1, t2);
+    if(root2->getRight() != NULL)
+        PreOrderRotate(root1->getRight(), root2->getRight(), t1, t2);
+        
+}
  
  template <typename Key, typename Value>
  void rotateBST<Key, Value>::transform(rotateBST<Key, Value>& t2) const{
     //if they don't have the same key, do nothing
     if (!this->sameKeys(t2)) return;
-    //continuing to do the right rotation, until it becomes linked list
-    while (t2.BinarySearchTree<Key, Value>::mRoot->getLeft() != NULL){
-        t2.rightRotate(t2.BinarySearchTree<Key, Value>::mRoot);
-    }
 
+    //continuing to do the right rotation, until it becomes linked list
+    Node<Key, Value>* tmp = t2.BinarySearchTree<Key, Value>::mRoot;
+    //std::cout<<tmp->getKey()<<std::endl;
+    while(tmp->getRight() != NULL){
+        while (tmp->getLeft() != NULL){
+            t2.rightRotate(tmp);
+            //t2.BinarySearchTree<Key, Value>::print();
+            tmp = tmp->getParent();
+            //std::cout<<tmp->getKey()<<std::endl;
+        }
+    tmp = tmp->getRight();
+    }
+        //std::cerr<<"stop"<<std::endl;
+
+/*
     //check to see if it's a linked list
     Node<Key, Value>* tmp = t2.BinarySearchTree<Key, Value>::mRoot;
     while (tmp->getRight() != NULL){
         if (tmp->getLeft() != NULL) std::cerr << tmp->getKey()<<" has a left child!!" <<std::endl;
     }
+*/
+    Node<Key, Value>* tmp2 = t2.BinarySearchTree<Key, Value>::mRoot;
+    Node<Key, Value>* tmp1 = this->BinarySearchTree<Key, Value>::mRoot;
+    //std::cerr<<"start"<<std::endl;
+    PreOrderRotate(tmp1, tmp2, *this, t2);
 
  }

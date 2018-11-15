@@ -608,7 +608,7 @@ void BinarySearchTree<Key, Value>::clear()
 	while (!q.empty()){
 		mRoot = q.front();
 		q.pop();
-		std::cerr << mRoot->getKey()<<std::endl;
+		//std::cerr << mRoot->getKey()<<std::endl;
 		if (mRoot->getLeft() != NULL)	q.push(mRoot->getLeft());
 		if (mRoot->getRight() != NULL)	q.push(mRoot->getRight());
 		delete mRoot;
