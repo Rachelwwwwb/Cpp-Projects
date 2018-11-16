@@ -264,13 +264,19 @@ void rotateBST<Key, Value>::rightRotate(Node<Key, Value>* r){
 
 template <typename Key, typename Value>
  bool rotateBST<Key, Value>::sameKeys(const rotateBST<Key, Value>& t2) const{
-
+/*
+    std::cout << "t2: -------------------------"<<std::endl;
+    t2.BinarySearchTree<Key, Value>::print();
+    std::cout << "this: -------------------------"<<std::endl;
+    this->BinarySearchTree<Key, Value>::print();
+*/
     if (BinarySearchTree<Key, Value>::mRoot == NULL && t2.BinarySearchTree<Key, Value>::mRoot == NULL)	return true;
     else if (BinarySearchTree<Key, Value>::mRoot == NULL || t2.BinarySearchTree<Key, Value>::mRoot == NULL) return false;
 	
     typename BinarySearchTree<Key, Value>::iterator t2it = t2.begin();
     for (typename BinarySearchTree<Key, Value>::iterator it = this->begin(); it != this->end(); ++it){
         if(t2it == t2.end())    return false;
+        //std::cerr << "it:" << it->first<< " t2it: " << t2it->first<<std::endl;
         if(it->first != t2it->first)  return false;
         ++t2it;
         }
@@ -309,19 +315,24 @@ void rotateBST<Key, Value>::PreOrderRotate(Node<Key, Value>* root1, Node<Key, Va
  void rotateBST<Key, Value>::transform(rotateBST<Key, Value>& t2) const{
     //if they don't have the same key, do nothing
     if (!this->sameKeys(t2)) return;
-
+    if(t2.BinarySearchTree<Key, Value>::mRoot == NULL || this->BinarySearchTree<Key, Value>::mRoot == NULL) return;
     //continuing to do the right rotation, until it becomes linked list
     Node<Key, Value>* tmp = t2.BinarySearchTree<Key, Value>::mRoot;
+    //std::cerr<<tmp->getRight()<<" "<<tmp->getLeft()<<std::endl;
     //std::cout<<tmp->getKey()<<std::endl;
-    while(tmp->getRight() != NULL){
+    while(tmp->getLeft() == NULL)   tmp = tmp->getLeft();
+    
+    while(tmp != NULL){
         while (tmp->getLeft() != NULL){
             t2.rightRotate(tmp);
-            //t2.BinarySearchTree<Key, Value>::print();
             tmp = tmp->getParent();
+            //t2.BinarySearchTree<Key, Value>::print();
             //std::cout<<tmp->getKey()<<std::endl;
         }
     tmp = tmp->getRight();
     }
+
+    std::cout << "linked list t2: -------------------------"<<std::endl;
         //std::cerr<<"stop"<<std::endl;
 
 /*
@@ -335,5 +346,4 @@ void rotateBST<Key, Value>::PreOrderRotate(Node<Key, Value>* root1, Node<Key, Va
     Node<Key, Value>* tmp1 = this->BinarySearchTree<Key, Value>::mRoot;
     //std::cerr<<"start"<<std::endl;
     PreOrderRotate(tmp1, tmp2, *this, t2);
-
  }
