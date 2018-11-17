@@ -1,1 +1,0 @@
-/usr/bin/c++    -Wall -g3 -O0   CMakeFiles/avl_checker.dir/avl_checker.cpp.o  -o compile_test_results_dont_run_these/avl_checker 

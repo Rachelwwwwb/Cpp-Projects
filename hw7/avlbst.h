@@ -117,11 +117,7 @@ End implementations for the AVLNode class.
 */
 template <class Key, class Value>
 class AVLTree : public rotateBST<Key, Value>
-{
-private:
-    int checkBalanced(AVLNode <Key, Value>* node);
-    void adjustHeight(AVLNode <Key, Value>* tmp);
-
+{   
 public:
 	// Methods for inserting/removing elements from the tree. You must implement
 	// both of these methods. 
@@ -129,8 +125,9 @@ public:
     void remove(const Key& key);
 
 private:
-	/* Helper functions are strongly encouraged to help separate the problem
-	   into smaller pieces. You should not need additional data members. */
+	int checkBalanced(AVLNode <Key, Value>* node);
+    void adjustHeight(AVLNode <Key, Value>* tmp);
+
 };
 
 /*
@@ -211,21 +208,13 @@ void AVLTree<Key, Value>::insert(const std::pair<Key, Value>& keyValuePair)
 				tmp->setValue(toAdd->getValue());
 				delete toAdd;
 				toAdd = NULL;
-				return;	
-                //no need to update height
-                //the tree must keep as an avl tree			
+				return;			
 			}
 		}
 	}
 	
     AVLNode<Key, Value>*tmp = toAdd;
     while (tmp != NULL){
-        //manually cast the root
-        //would have error here but WO LAN DE GAO
-        /*
-        if (tmp == this->BinarySearchTree<Key, Value>::mRoot)   
-        dynamic_cast<AVLNode<Key, Value>*>(this->BinarySearchTree<Key, Value>::mRoot)->setHeight(1+std::max(this->BinarySearchTree<Key, Value>::mRoot->getLeft()->));
-        */
         int oldHeight = tmp->getHeight();
         adjustHeight(tmp);
         //if the node is not changing height, no more adjustment need to be made
@@ -261,11 +250,10 @@ void AVLTree<Key, Value>::insert(const std::pair<Key, Value>& keyValuePair)
 template<typename Key, typename Value>
 void AVLTree<Key, Value>::remove(const Key& key)
 {
-   //literally copy from the bst.h
+	//do the bst remove first with AVLNode
+	//and record the parent of to romved node, which I will check height from there later
 	if (this->BinarySearchTree<Key, Value>::mRoot == NULL)	return;
 	AVLNode<Key, Value>* tmp = dynamic_cast<AVLNode<Key, Value>*>(this->BinarySearchTree<Key, Value>::mRoot);
-    //the parent of the deleted root
-    //the root we need to begin to check
     AVLNode<Key, Value>* parent = NULL;
 	bool toRight;
 	while (tmp != NULL){
@@ -279,19 +267,19 @@ void AVLTree<Key, Value>::remove(const Key& key)
 		}
 		
 		else if (key == tmp->getKey()){
-            if (tmp->getParent() != NULL)   parent = tmp->getParent();
-			//if the node has no children
 			if (tmp->getLeft() == NULL && tmp->getRight() == NULL){
 				if (tmp->getParent() != NULL){
 					if (toRight)	tmp->getParent()->setRight(NULL);
 					else if (!toRight)	tmp->getParent()->setLeft(NULL);
 				}
+				if (tmp->getParent() != NULL)   parent = tmp->getParent();
 				if(tmp == dynamic_cast<AVLNode<Key, Value>*>(this->BinarySearchTree<Key, Value>::mRoot))	this->BinarySearchTree<Key, Value>::mRoot = NULL;
 				delete tmp;
 				tmp = NULL;
 			}
 			//only has the left child
 			else if (tmp->getLeft() != NULL && tmp->getRight() == NULL){
+				parent = tmp->getLeft();
 				tmp->getLeft()->setParent (tmp->getParent());
 				if (tmp->getParent() != NULL){
 					if (toRight) tmp->getParent()->setRight(tmp->getLeft());
@@ -303,6 +291,7 @@ void AVLTree<Key, Value>::remove(const Key& key)
 			}
 			//only has the right child
 			else if (tmp->getLeft() == NULL && tmp->getRight() != NULL){
+				parent = tmp->getRight();
 				tmp->getRight()->setParent (tmp->getParent());
 				if (tmp->getParent() != NULL){
 					if (toRight) tmp->getParent()->setRight(tmp->getRight());
@@ -316,10 +305,16 @@ void AVLTree<Key, Value>::remove(const Key& key)
 			else if (tmp->getLeft() != NULL && tmp->getRight() != NULL){
 				//find the predecessor
 				bool predecessorToRight = false;
-				Node<Key, Value>* predecessor = tmp->getLeft();
+				AVLNode<Key, Value>* predecessor = tmp->getLeft();
 				while (predecessor->getRight() != NULL)	{
 					predecessor = predecessor->getRight();
 					predecessorToRight = true;
+				}
+				if(predecessor->getParent() != tmp)
+				parent = predecessor->getParent();
+
+				else{
+					parent = predecessor;
 				}
 				//swap the predecesor with the tmp
 
@@ -333,6 +328,10 @@ void AVLTree<Key, Value>::remove(const Key& key)
 					if(predecessor->getLeft() != NULL || predecessor->getRight() != NULL){
 						if(predecessorToRight)	predecessor->getParent()->setRight(predecessor->getLeft());
 						else if (!predecessorToRight) predecessor->getParent()->setLeft(predecessor->getLeft());
+					}
+					else{
+						if(predecessorToRight)	predecessor->getParent()->setRight(NULL);
+						else if(!predecessorToRight)	predecessor->getParent()->setLeft(NULL);
 					}
 				}
 					
@@ -360,12 +359,9 @@ void AVLTree<Key, Value>::remove(const Key& key)
 		}
 	}
     while (parent != NULL){
-        int oldHeight = parent->getHeight();
         adjustHeight(parent);
         int balanced = checkBalanced(parent);
 
-        if(balanced == 0 && oldHeight == parent->getHeight())   return;
-        //the heights of all the sub-nodes are garanteed not changed
         if(balanced == -1){
         this->rotateBST<Key, Value>::rightRotate(parent);
         adjustHeight(parent);
@@ -384,10 +380,6 @@ void AVLTree<Key, Value>::remove(const Key& key)
     }
 	//if the key is not in the tree
     return;
-
-
-
-
 }
 
 /*

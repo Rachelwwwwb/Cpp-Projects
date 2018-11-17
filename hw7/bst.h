@@ -215,11 +215,6 @@ class BinarySearchTree
   		void print() const;
   		bool isBalanced() const; //TODO
 
-		//for test use only
-		//to be deleted
-		Node<Key, Value>*getRoot() const;
-		void printTree(Node<Key, Value>*root) const;
-
 	public:
 		/**
 		* An internal iterator class for traversing the contents of the BST.
@@ -562,16 +557,16 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
 						if(predecessorToRight)	predecessor->getParent()->setRight(predecessor->getLeft());
 						else if (!predecessorToRight) predecessor->getParent()->setLeft(predecessor->getLeft());
 					}
-				}
-					
+					else{
+						if(predecessorToRight)	predecessor->getParent()->setRight(NULL);
+						else if(!predecessorToRight)	predecessor->getParent()->setLeft(NULL);
+					}
+				}					
 				//if the tmp has a parent
 				if (tmp->getParent() != NULL){
 					if(toRight)	tmp->getParent()->setRight(predecessor);
 					else if (!toRight)	tmp->getParent()->setLeft(predecessor);}
 					predecessor->setParent(tmp->getParent());
-
-					
-			
 
 				//the tmp must has two children
 				//set the children of tmp to be the children of predecessor
@@ -608,17 +603,12 @@ void BinarySearchTree<Key, Value>::clear()
 	while (!q.empty()){
 		mRoot = q.front();
 		q.pop();
-		//std::cerr << mRoot->getKey()<<std::endl;
 		if (mRoot->getLeft() != NULL)	q.push(mRoot->getLeft());
 		if (mRoot->getRight() != NULL)	q.push(mRoot->getRight());
 		delete mRoot;
 		mRoot = NULL;
 	}
-	/*
-	if(mRoot != NULL){
-		throw std::domain_error ("the tree is not clear");
-	}
-	*/
+
 }
 
 /**
@@ -683,30 +673,6 @@ template<typename Key, typename Value>
 bool BinarySearchTree<Key, Value>::isBalanced() const
 {
    return isBalancedHelper(mRoot);
-}
-
-template <typename Key, typename Value>
-void BinarySearchTree<Key, Value>::printTree(Node<Key, Value>*root) const
-{	
-	if (root == NULL)	return;
-	if (root != NULL)	std::cout << "key:" << root -> getKey() << std::endl;
-	if (root->getLeft() != NULL)	
-	{
-		std::cout << "its left is " << root->getLeft() << std::endl;
-		std::cout << "the left key is "<<root->getLeft()->getKey() << std::endl;
-		printTree(root->getLeft());
-	}
-	if (root->getRight() != NULL){
-		std::cout << "its right is " << root->getRight() << std::endl;
-		std::cout << "the right key is "<<root->getRight()->getKey() << std::endl;
-		printTree(root->getRight());
-	}	
-}
-
-template <typename Key, typename Value>
-Node<Key, Value>* BinarySearchTree<Key, Value>::getRoot() const
-{
-	return mRoot;
 }
 
 

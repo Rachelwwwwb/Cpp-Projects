@@ -20,7 +20,6 @@ class rotateBST : public BinarySearchTree <Key, Value>
         
 };
 
-//do i really need the constructor and destructor?
 template<typename Key, typename Value>
 rotateBST<Key, Value>::rotateBST(){
 
@@ -47,8 +46,7 @@ void rotateBST<Key, Value>::leftRotate(Node<Key, Value>* r){
     if(r->getRight() == NULL)   return;
     y = r->getRight();
 
-     //the rotation will only be on two nodes
-    //std::cerr << r->getLeft()->getLeft() << r->getLeft()->getRight()<<std::endl;
+     //the rotation on two nodes
     if(r->getRight()->getLeft() == NULL && r->getRight()->getRight() == NULL){
         y->setParent(r->getParent());
         if(r->getParent() != NULL){
@@ -90,13 +88,7 @@ void rotateBST<Key, Value>::leftRotate(Node<Key, Value>* r){
         x = y->getLeft();
         zigzig = false;
     }
-    /*
-    std::cout << "r: "<<r->getKey() << std::endl;
-    std::cout << "y: "<<y->getKey() << std::endl;
-    std::cout << "x: "<<x->getKey() << std::endl;
-    */
-
-    //we got x, y and z(r) now, so start the rotation
+  
     //if it is zigzag, unzig the zag first
     if (!zigzig){
         if (x->getRight() != NULL)  {
@@ -115,12 +107,6 @@ void rotateBST<Key, Value>::leftRotate(Node<Key, Value>* r){
         //update the x, y and r
         y = x;
         x = y->getRight();
-    //std::cout << BinarySearchTree<Key, Value>::mRoot->getRight()->getLeft()->getLeft()<<std::endl;
-   /* 
-    std::cout << "r: "<<r->getKey() << std::endl;
-    std::cout << "y: "<<y->getKey() << std::endl;
-    std::cout << "x: "<<x->getKey() << std::endl;
-    */
     } 
 
     //do the zigzig left rotation
@@ -141,7 +127,7 @@ void rotateBST<Key, Value>::leftRotate(Node<Key, Value>* r){
         else    r->getParent()->setRight(y);
     }
 
-    //change the relation between y and r
+    //update y and r
     r->setParent(y);
     y->setLeft(r);
 
@@ -161,8 +147,7 @@ void rotateBST<Key, Value>::rightRotate(Node<Key, Value>* r){
     if(r->getLeft() == NULL)   return;
     y = r->getLeft();
 
-    //the rotation will only be on two nodes
-    //std::cerr << r->getLeft()->getLeft() << r->getLeft()->getRight()<<std::endl;
+    //the rotation on two nodes
     if(r->getLeft()->getLeft() == NULL && r->getLeft()->getRight() == NULL){
         y->setParent(r->getParent());
         if(r->getParent() != NULL){
@@ -203,13 +188,6 @@ void rotateBST<Key, Value>::rightRotate(Node<Key, Value>* r){
         x = y->getLeft();
         zigzig = true;
     }
-    /*
-    std::cout << "r: "<<r->getKey() << std::endl;
-    std::cout << "y: "<<y->getKey() << std::endl;
-    std::cout << "x: "<<x->getKey() << std::endl;
-    */
-
-    //we got x, y and z(r) now, so start the rotation
     //if it is zigzag, unzig the zag first
     if (!zigzig){
         if (x->getLeft() != NULL)  {
@@ -228,16 +206,10 @@ void rotateBST<Key, Value>::rightRotate(Node<Key, Value>* r){
         //update the x, y and r
         y = x;
         x = y->getLeft();
-    //std::cout << BinarySearchTree<Key, Value>::mRoot->getRight()->getLeft()->getLeft()<<std::endl;
-   /*
-    std::cout << "r: "<<r->getKey() << std::endl;
-    std::cout << "y: "<<y->getKey() << std::endl;
-    std::cout << "x: "<<x->getKey() << std::endl;
-    */
+  
     } 
 
     //do the zigzig left rotation
-
     //r adopt the left child of y
     if (y->getRight() != NULL){
         y->getRight()->setParent(r);
@@ -264,19 +236,13 @@ void rotateBST<Key, Value>::rightRotate(Node<Key, Value>* r){
 
 template <typename Key, typename Value>
  bool rotateBST<Key, Value>::sameKeys(const rotateBST<Key, Value>& t2) const{
-/*
-    std::cout << "t2: -------------------------"<<std::endl;
-    t2.BinarySearchTree<Key, Value>::print();
-    std::cout << "this: -------------------------"<<std::endl;
-    this->BinarySearchTree<Key, Value>::print();
-*/
+
     if (BinarySearchTree<Key, Value>::mRoot == NULL && t2.BinarySearchTree<Key, Value>::mRoot == NULL)	return true;
     else if (BinarySearchTree<Key, Value>::mRoot == NULL || t2.BinarySearchTree<Key, Value>::mRoot == NULL) return false;
 	
     typename BinarySearchTree<Key, Value>::iterator t2it = t2.begin();
     for (typename BinarySearchTree<Key, Value>::iterator it = this->begin(); it != this->end(); ++it){
         if(t2it == t2.end())    return false;
-        //std::cerr << "it:" << it->first<< " t2it: " << t2it->first<<std::endl;
         if(it->first != t2it->first)  return false;
         ++t2it;
         }
@@ -318,32 +284,17 @@ void rotateBST<Key, Value>::PreOrderRotate(Node<Key, Value>* root1, Node<Key, Va
     if(t2.BinarySearchTree<Key, Value>::mRoot == NULL || this->BinarySearchTree<Key, Value>::mRoot == NULL) return;
     //continuing to do the right rotation, until it becomes linked list
     Node<Key, Value>* tmp = t2.BinarySearchTree<Key, Value>::mRoot;
-    //std::cerr<<tmp->getRight()<<" "<<tmp->getLeft()<<std::endl;
-    //std::cout<<tmp->getKey()<<std::endl;
     while(tmp->getLeft() == NULL)   tmp = tmp->getLeft();
     
     while(tmp != NULL){
         while (tmp->getLeft() != NULL){
             t2.rightRotate(tmp);
             tmp = tmp->getParent();
-            //t2.BinarySearchTree<Key, Value>::print();
-            //std::cout<<tmp->getKey()<<std::endl;
         }
     tmp = tmp->getRight();
     }
 
-    std::cout << "linked list t2: -------------------------"<<std::endl;
-        //std::cerr<<"stop"<<std::endl;
-
-/*
-    //check to see if it's a linked list
-    Node<Key, Value>* tmp = t2.BinarySearchTree<Key, Value>::mRoot;
-    while (tmp->getRight() != NULL){
-        if (tmp->getLeft() != NULL) std::cerr << tmp->getKey()<<" has a left child!!" <<std::endl;
-    }
-*/
     Node<Key, Value>* tmp2 = t2.BinarySearchTree<Key, Value>::mRoot;
     Node<Key, Value>* tmp1 = this->BinarySearchTree<Key, Value>::mRoot;
-    //std::cerr<<"start"<<std::endl;
     PreOrderRotate(tmp1, tmp2, *this, t2);
  }
