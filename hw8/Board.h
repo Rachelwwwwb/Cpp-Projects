@@ -49,9 +49,9 @@ public:
 
 	bool checkLegalMove(const PlaceMove& m);
 
-	bool checkHorizontal(size_t x, size_t y, std::string word,TrieSet& trie);
+    void checkHorizontal(const size_t startX, const size_t startY, size_t x, size_t y, std::string used, std::string word, std::string remaining,std::vector<PlaceMove*>& legalMoves,TrieSet& trie, TrieNode* checkPoint, Player* p);
 
-	bool checkVertical(size_t x, size_t y, std::string word,TrieSet& trie);
+    void checkVertical(const size_t startX, const size_t startY, size_t x, size_t y, std::string used, std::string word, std::string remaining,std::vector<PlaceMove*>& legalMoves,TrieSet& trie, TrieNode* checkPoint, Player* p);
 	
 private:
 size_t _rows;

@@ -129,7 +129,7 @@ using namespace std;
 		return _horizontal;
 	}
 
-	bool PlaceMove::allLegal(Board & board, Bag & bag, Dictionary & dictionary){
+	bool PlaceMove::allLegal(Board & board, Dictionary & dictionary){
 	
 		//check if physically feasible
 		if(_player->hasTiles(_tileString,true)){
@@ -175,7 +175,7 @@ using namespace std;
 	}
 
 	void PlaceMove::execute(Board & board, Bag & bag, Dictionary & dictionary){
-		if (this->allLegal(board, bag, dictionary)){
+		if (this->allLegal(board, dictionary)){
 			board.executePlaceMove(*this);
 			_toAdd = bag.drawTiles(truesize);
 			_player -> addTiles(_toAdd);
@@ -196,3 +196,8 @@ using namespace std;
 	Player* PlaceMove::getPlayer() const{
 		return _player;
 	}
+
+	size_t PlaceMove::getTrueSize(){
+		return truesize;
+	}
+

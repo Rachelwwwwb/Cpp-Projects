@@ -22,7 +22,8 @@
 using namespace std;
 
 int main(int argc, char* argv[]){
-    ifstream config (argv[1]);
+    //remember to change back!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ifstream config ("config.txt");
     size_t handSize;
     string boardFile;
     string bagFile;
@@ -93,17 +94,8 @@ int main(int argc, char* argv[]){
         //check the first four letters to see if the player is an AI
         string tmp = "";
         for (int i = 0; i < 4; i++)     tmp += tolower(name[i]);
-        if (tmp == "cpus"){
+        if (tmp == "cpus" || tmp == "cpul"){
             playerList.push_back(new Player (name , handSize, true));
-            AIList.push_back(new AIPlayer(true));
-            //need an index to memorize the relations
-            playerList[i]->setAIindex(AIList.size()-1);
-        }
-        else if(tmp == "cpul"){
-            playerList.push_back(new Player (name , handSize, true));
-            AIList.push_back(new AIPlayer(false));
-            //need an index to memorize the relations
-            playerList[i]->setAIindex(AIList.size()-1);
         }
         else{
         playerList.push_back(new Player (name , handSize, false));
@@ -139,8 +131,18 @@ int main(int argc, char* argv[]){
             }
             //if the player is an ai
             else{
-            AIPlayer* theAI = AIList[PlayerList[i]->getAIindex()];
-            oneMove = theAI->getMove(myBoard,myDic,playerList[i],myTrie);
+                AIPlayer* theAI;
+                //check the first four letters to see if the player is an AI
+                string tmp = "";
+                for (int index = 0; index < 4; index++)     tmp += tolower(playerList[i] -> getName()[index]);
+                if (tmp == "cpus"){
+                    theAI = new AIPlayer(true);
+                }
+                else if(tmp == "cpul"){
+                    theAI = new AIPlayer(false);
+                }    
+            oneMove = theAI->getMove(myBoard,myDic,*playerList[i],myTrie);
+            delete theAI;
             }
 
             //If the user enters pass

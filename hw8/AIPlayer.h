@@ -12,7 +12,7 @@ public:
     AIPlayer(bool isCPUS);
     ~AIPlayer();
     //get all the possible permutations of words given the tiles on hand
-    void permutationHelper(const string& letters, size_t n, string curr,vector<string>& collection);
+    void permutationHelper(const std::string& letters, size_t n, std::string curr, std::vector<std::string>& collection);
     std::vector<std::string> getPermutations(Player& p);
     void setLongest(size_t size);
     size_t getLongest() const;
@@ -23,6 +23,6 @@ public:
 private:
     std::string _lettersOnHand;
     std::vector<PlaceMove*> legalMoves;
-    std::vector<std::string> permutations;
+    std::vector<std::string> _permutations;
     bool _isCPUS;
 };

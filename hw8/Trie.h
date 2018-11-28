@@ -1,3 +1,7 @@
+
+#ifndef TRIE_H_
+#define TRIE_H_
+
 #include <string>
 #include <iostream>
 
@@ -37,3 +41,5 @@ private:
     TrieNode* head;
     TrieNode* createNew(TrieNode* _parent);
 };
+
+#endif /* TRIE_H_ */

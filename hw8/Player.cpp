@@ -175,12 +175,3 @@ using namespace std;
 	bool Player::getAI() const{
 		return _isAI;
 	}
-
-	size_t Player::getAIindex() const{
-		if (_isAI)	return _AIindex;
-		else return -1;
-	}
-
-	void Player::setAIindex(size_t index){
-		_AIindex = index;
-	}

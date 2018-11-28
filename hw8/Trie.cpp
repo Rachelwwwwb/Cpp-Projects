@@ -98,4 +98,3 @@ TrieNode* TrieSet::prefix(std::string px){
     return tmp;
 }
 
-bool hasChildren (TrieNode* node); 
