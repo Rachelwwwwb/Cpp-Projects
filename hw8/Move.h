@@ -161,7 +161,7 @@ public:
 	   decide (and document) what exactly it throws*/
 	void execute(Board & board, Bag & bag, Dictionary & dictionary);
 
-	void allLegal(Board & board, Bag & bag, Dictionary & dictionary);
+	bool allLegal(Board & board, Bag & bag, Dictionary & dictionary);
 
 	size_t getStartx() const;
 

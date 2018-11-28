@@ -6,7 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <exception>
-#include "Exception.h"
+#include "Exceptions.h"
 #include "Tile.h"
 #include "Square.h"
 #include "Move.h"
@@ -395,13 +395,13 @@ using namespace std;
     }
 
 
-    bool checkHorizontal(size_t x, size_t y, string word,TrieSet& trie){
+    bool Board::checkHorizontal(size_t x, size_t y, string word,TrieSet& trie){
         if (_board[y][x]->isOccupied()) return false;
         string currentWord = "";
         size_t leftMost = x;
         while(leftMost-1 >= 0){
-            if (_board[leftMost-1][y]->isOccupied()){
-                currentWord += _board[leftMost-1][y]->getLetter();
+            if (_board[y][leftMost-1]->isOccupied()){
+                currentWord += _board[y][leftMost-1]->getLetter();
             }
             else{
                 break;
@@ -414,22 +414,64 @@ using namespace std;
         if (checkPoint->childrenSize() == 0)    return false;
 
         int extraLetter = 0;
-        for (int i = 0; i < word.size();i++){
+        for (int i = 0; i < (int)word.size();i++){
             if (x + i + extraLetter >= _columns)    return false;
             char letterToAdd;
             //if the next square is occupied
-            if (_board[x + i + extraLetter][y]->isOccupied()){              
+            if (_board[y][x + i + extraLetter]->isOccupied()){              
                     extraLetter ++;
-                    letterToAdd = toupper(_board[x + i + extraLetter][y]->getLetter());
+                    letterToAdd = toupper(_board[y][x + i + extraLetter]->getLetter());
                     i--;
             }
             else{
                 letterToAdd = toupper(word[i]);
             }
             if (checkPoint->children[(int)letterToAdd - 'A'] == NULL) return false;
-            else    checkPoint = checkPoint.children[(int) letterToAdd - 'A'];
+            else    checkPoint = checkPoint->children[(int) letterToAdd - 'A'];
         }
     
     if(checkPoint->inSet)   return true;
     return false;
     }
+
+
+
+    bool Board::checkVertical(size_t x, size_t y, string word,TrieSet& trie){
+        if (_board[y][x]->isOccupied()) return false;
+        string currentWord = "";
+        size_t upMost = y;
+        while(upMost-1 >= 0){
+            if (_board[upMost-1][x]->isOccupied()){
+                currentWord += _board[upMost-1][x]->getLetter();
+            }
+            else{
+                break;
+            }
+            upMost -- ;
+        }
+        //reverse the word
+        reverse(currentWord.begin(),currentWord.end());
+        TrieNode* checkPoint = trie.prefix(currentWord); 
+        if (checkPoint->childrenSize() == 0)    return false;
+
+        int extraLetter = 0;
+        for (int i = 0; i < (int)word.size();i++){
+            if (y + i + extraLetter >= _rows)    return false;
+            char letterToAdd;
+            //if the next square is occupied
+            if (_board[y + i + extraLetter][x]->isOccupied()){              
+                    extraLetter ++;
+                    letterToAdd = toupper(_board[y + i + extraLetter][x]->getLetter());
+                    i--;
+            }
+            else{
+                letterToAdd = toupper(word[i]);
+            }
+            if (checkPoint->children[(int)letterToAdd - 'A'] == NULL) return false;
+            else    checkPoint = checkPoint->children[(int) letterToAdd - 'A'];
+        }
+    
+    if(checkPoint->inSet)   return true;
+    return false;
+    }
+

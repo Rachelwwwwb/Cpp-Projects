@@ -129,12 +129,19 @@ int main(int argc, char* argv[]){
             
             string moveString = "";
             cout<< "It is Player "<< i+1 <<" " << playerList[i] -> getName() <<"'s turn" <<endl;
+            
+            Move* oneMove;
+            if (!playerList[i]->getAI()){
             cout << "Enter your move: ";
             getline (std::cin, moveString);
-            
             Move*_move;
-            Move* oneMove;
             oneMove = _move->parseMove(moveString, *playerList[i]);
+            }
+            //if the player is an ai
+            else{
+            AIPlayer* theAI = AIList[PlayerList[i]->getAIindex()];
+            oneMove = theAI->getMove(myBoard,myDic,playerList[i],myTrie);
+            }
 
             //If the user enters pass
             if (oneMove -> isPass()){

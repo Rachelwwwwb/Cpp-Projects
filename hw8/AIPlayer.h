@@ -1,8 +1,10 @@
 #include "Player.h"
+#include "Move.h"
+#include "Board.h"
+#include "Trie.h"
 
 #include <string>
 #include <vector>
-#include <Move.h>
 
 class AIPlayer
 {
@@ -14,13 +16,13 @@ public:
     std::vector<std::string> getPermutations(Player& p);
     void setLongest(size_t size);
     size_t getLongest() const;
-    Move getMove(Board & board, Bag & bag, Dictionary & dictionary, Player& p);
+    Move* getMove(Board & board, Dictionary & dictionary, Player& p,TrieSet& trie);
     bool isCPUS() const;
 
 
 private:
     std::string _lettersOnHand;
-    std::vector<std::string> legalMoves;
+    std::vector<PlaceMove*> legalMoves;
     std::vector<std::string> permutations;
     bool _isCPUS;
 };

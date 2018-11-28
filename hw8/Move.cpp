@@ -129,19 +129,20 @@ using namespace std;
 		return _horizontal;
 	}
 
-	void PlaceMove::allLegal(Board & board, Bag & bag, Dictionary & dictionary){
+	bool PlaceMove::allLegal(Board & board, Bag & bag, Dictionary & dictionary){
 	
 		//check if physically feasible
-		bool execute = true;
 		if(_player->hasTiles(_tileString,true)){
 			_tilestotake = _player->takeTiles(_tileString,true);}
 		else{
-			throw invalid_argument ("NO SUCH TILES"); }
+			throw invalid_argument ("NO SUCH TILES"); 
+			return false;}
 
 
 		vector<pair<std::string, unsigned int>> words = board.getPlaceMoveResults(*this);
 		if (words.size() < 1){
 			throw invalid_argument ("NO WORD FORMED");
+			return false;
 		}
 
 		for (size_t i = 0; i < words.size(); i++){
@@ -152,14 +153,10 @@ using namespace std;
 			if(!dictionary.isLegalWord(_newWords[i])){
 				_newScore = 0;
 				_player -> addTiles(_tilestotake);
-				execute = false;
 				throw invalid_argument ("ILLEGAL WORD");
+				return false;
 			}
 		}
-	
-		if (truesize == _player -> getMaxTiles()){
-			_newScore += 50;
-			}
 
 		truesize = (size_t) _tileString.size();
 		for (size_t i = 0; i < _tileString.size();i++){
@@ -167,8 +164,13 @@ using namespace std;
 				truesize--;
 			}
 		}
+
+		if (truesize == _player -> getMaxTiles()){
+			_newScore += 50;
+			}
 		//break it here
 		//true execute and making ddecisions
+		return true;
 		
 	}
 
@@ -178,7 +180,6 @@ using namespace std;
 			_toAdd = bag.drawTiles(truesize);
 			_player -> addTiles(_toAdd);
 			_player -> addScore(_newScore);
-		}
 		}
 	}
 
