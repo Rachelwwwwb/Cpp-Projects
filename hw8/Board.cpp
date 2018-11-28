@@ -6,12 +6,14 @@
 #include <iostream>
 #include <fstream>
 #include <exception>
-#include "exception"
+#include "Exception.h"
 #include "Tile.h"
 #include "Square.h"
 #include "Move.h"
 #include "Dictionary.h"
 #include "Board.h"
+#include "Player.h"
+#include "Bag.h"
 
 using namespace std;
 
@@ -44,15 +46,43 @@ using namespace std;
             else if (line [i-1] == 't') WMult = 3;
             Square* oneSquare = new Square(LMult, WMult, isStart);
             oneRow.push_back(oneSquare);
-           // if(isStart)     _start = oneSquare;
 		}
         numRow++;
         _board.push_back(oneRow);
+        }
     }
     }
 
-   
+    void Board::getInitial(std::string inifile){
+    _board[_y][_x]->changeStart(false);
+	std::ifstream initialFileStream(inifile);
+    size_t numRow = 0;
+	while(!initialFileStream.eof())
+	{
+        string line;    //one row
+        getline(initialFileStream,line);
+
+        //inside a line (_x)
+        if (line != ""){
+            int count = 0;
+		for(size_t i = 0; i < line.size(); i = i + 3){
+			if (line[i] == '.'){
+                count ++;
+            }
+            else{
+                char letter = toupper(line[i]);
+                string points = line.substr(i+1,2);
+                int point = stoi(points);
+                Tile* tile = new Tile(letter, (unsigned int) point);
+                _board[numRow][count]->placeTile(tile);
+                count++;
+            }
+		}
+        numRow++;
+        }
     }
+    }
+
 
 
 	Board::~Board (){
@@ -75,7 +105,8 @@ using namespace std;
         
         bool startCorrect = true;
         //check if the 1st player starts at the START
-        if (!_board[_y-1][_x-1]->isOccupied()){
+        //if there's an initialState, no need to check
+        if (!_board[_y-1][_x-1]->isOccupied() && _board[_y-1][_x-1]->isStart()){
                 startCorrect = false;
                 isNextto = true;
             }
@@ -306,13 +337,13 @@ using namespace std;
                 m.getPlayer() -> addTiles(tileVector);
                 throw range_error ("Not NEXT TO SOME LETTER");
             }
-
     return words;
+
     }
 
 	void Board::executePlaceMove (const PlaceMove & m){
         size_t startX = m.getStartx();
-        size_t startY = m.getStarty();
+        size_t startY = m.getStarty(); 
         bool horizontal = m.getDirection();
         size_t occupiedNum = 0;
         std::vector<Tile*> tileVector = m.tileVector();
@@ -361,4 +392,44 @@ using namespace std;
 
 	size_t Board::getColumns() const{
         return _columns;
+    }
+
+
+    bool checkHorizontal(size_t x, size_t y, string word,TrieSet& trie){
+        if (_board[y][x]->isOccupied()) return false;
+        string currentWord = "";
+        size_t leftMost = x;
+        while(leftMost-1 >= 0){
+            if (_board[leftMost-1][y]->isOccupied()){
+                currentWord += _board[leftMost-1][y]->getLetter();
+            }
+            else{
+                break;
+            }
+            leftMost -- ;
+        }
+        //reverse the word
+        reverse(currentWord.begin(),currentWord.end());
+        TrieNode* checkPoint = trie.prefix(currentWord); 
+        if (checkPoint->childrenSize() == 0)    return false;
+
+        int extraLetter = 0;
+        for (int i = 0; i < word.size();i++){
+            if (x + i + extraLetter >= _columns)    return false;
+            char letterToAdd;
+            //if the next square is occupied
+            if (_board[x + i + extraLetter][y]->isOccupied()){              
+                    extraLetter ++;
+                    letterToAdd = toupper(_board[x + i + extraLetter][y]->getLetter());
+                    i--;
+            }
+            else{
+                letterToAdd = toupper(word[i]);
+            }
+            if (checkPoint->children[(int)letterToAdd - 'A'] == NULL) return false;
+            else    checkPoint = checkPoint.children[(int) letterToAdd - 'A'];
+        }
+    
+    if(checkPoint->inSet)   return true;
+    return false;
     }

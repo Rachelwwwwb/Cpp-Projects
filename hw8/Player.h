@@ -26,7 +26,7 @@ public:
 	/* Constructor giving the player the given name, and setting their points to 0.
 	   Does not give the player any tiles.
 	*/
-	Player (std::string const & name, size_t maxTiles);
+	Player (std::string const & name, size_t maxTiles, bool isAI);
 
 	/* Destructor for a player. Deletes all the tiles the player still has. */
 	~Player ();
@@ -46,7 +46,7 @@ public:
 	   By definition, if this function returns true, then takeTiles() would
 	   succeed.
 	 */
-		bool hasTiles(std::string const & move, bool resolveBlanks) const;
+	bool hasTiles(std::string const & move, bool resolveBlanks) const;
 
 	void showHand();
 
@@ -78,11 +78,19 @@ public:
 
 	std::string getName() const;
 
-private:
+	bool getAI() const;
+
+	size_t getAIindex() const;
+
+	void setAIindex(size_t index);
+
+protected:
 	std::string _name;
 	size_t _maxTiles;
 	std::vector<Tile*> _tilesOnHand;
 	int _score;
+	bool _isAI;
+	size_t _AIindex;
 
 };
 

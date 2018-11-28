@@ -2,10 +2,21 @@
 #include <iostream>
 #include <string>
 #include <queue>
+#include <algorithm>
+#include <fstream>
+
 using namespace std;
 
-TrieSet::TrieSet (){
+TrieSet::TrieSet (const std::string& Dictionary){
     head = this->createNew(NULL);
+    std::ifstream dicStream(Dictionary);
+
+    while (!dicStream.eof()){
+        string word;
+        dicStream >> word;
+        this->insert(word);
+    }
+
   }
 
 TrieSet::~TrieSet (){
@@ -48,6 +59,7 @@ void TrieSet::insert (std::string input){
         }
         tmp = tmp->children[num];
     }
+    tmp->inSet = true;
 }
 
 void TrieSet::remove (std::string input){
@@ -85,3 +97,5 @@ TrieNode* TrieSet::prefix(std::string px){
     }
     return tmp;
 }
+
+bool hasChildren (TrieNode* node); 

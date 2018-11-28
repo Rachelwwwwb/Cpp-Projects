@@ -67,6 +67,10 @@ public:
 
 	/* Returns the number of columns of the board.*/
 	size_t getColumns() const;
+
+	void getInitial(std::string inifile);
+
+	bool checkLegalMove(const PlaceMove& m);
 	
 private:
 size_t _rows;

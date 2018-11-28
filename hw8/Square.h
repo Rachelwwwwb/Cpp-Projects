@@ -61,6 +61,9 @@ public:
 	bool isStart () const
 	{ return _start; }
 
+	void changeStart(bool status){
+		_start = status;
+	}
 	/* Gets the base score of the tile placed on the square (if any).
 	   Does not factor in any letter or word multipliers.
 	   The score of an empty square is 0. */

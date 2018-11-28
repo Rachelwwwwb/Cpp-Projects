@@ -161,6 +161,8 @@ public:
 	   decide (and document) what exactly it throws*/
 	void execute(Board & board, Bag & bag, Dictionary & dictionary);
 
+	void allLegal(Board & board, Bag & bag, Dictionary & dictionary);
+
 	size_t getStartx() const;
 
 	size_t getStarty() const;
@@ -170,6 +172,8 @@ public:
 	void printNewWord();
 
 	int getNewScore();
+
+	size_t getTrueSize();
 
 	Player* getPlayer() const;
 
@@ -183,6 +187,7 @@ std::vector<Tile*> _toAdd;
 std::vector <Tile*> _tilestotake;
 std::vector<std::string> _newWords;
 int _newScore;
+size_t truesize;
 
 };
 

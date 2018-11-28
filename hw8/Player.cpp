@@ -14,10 +14,11 @@ using namespace std;
 	/* Constructor giving the player the given name, and setting their points to 0.
 	   Does not give the player any tiles.
 	*/
-	Player::Player (std::string const & name, size_t maxTiles){
+	Player::Player (std::string const & name, size_t maxTiles, bool isAI){
     _name = name;
 	_maxTiles = maxTiles;
 	_score = 0;
+	_isAI = isAI;
     }
 
 	/* Destructor for a player. Deletes all the tiles the player still has. */
@@ -169,4 +170,17 @@ using namespace std;
 
 	std::string Player::getName() const{
 		return _name;
+	}
+
+	bool Player::getAI() const{
+		return _isAI;
+	}
+
+	size_t Player::getAIindex() const{
+		if (_isAI)	return _AIindex;
+		else return -1;
+	}
+
+	void Player::setAIindex(size_t index){
+		_AIindex = index;
 	}

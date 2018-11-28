@@ -17,6 +17,7 @@
 #include "ConsolePrinter.h"
 #include "Exceptions.h"
 #include "Trie.h"
+#include "AIPlayer.h"
 
 using namespace std;
 
@@ -27,6 +28,8 @@ int main(int argc, char* argv[]){
     string bagFile;
     string dictionaryFile;
     uint32_t seed;
+    bool initialState = false;
+    string initialFile;
 
     string line;
     while(getline(config,line)){
@@ -59,6 +62,10 @@ int main(int argc, char* argv[]){
         else if (command == "SEED:"){
             seed = stoi(fileName, 0, 10);
         }
+        else if (command == "INIT:"){
+            initialState = true;
+            initialFile = fileName;
+        }
     }
 
      //initial board, bag, dictionary before playing 
@@ -66,6 +73,9 @@ int main(int argc, char* argv[]){
     Bag myBag (bagFile, seed);
     Dictionary myDic (dictionaryFile);
     ConsolePrinter printer;
+    TrieSet myTrie (dictionaryFile);
+    if (initialState)   
+    myBoard.getInitial(initialFile);
     
     size_t numOfPlayers = 0;
     while(numOfPlayers < 1 || numOfPlayers > 8){
@@ -73,16 +83,33 @@ int main(int argc, char* argv[]){
     cin >> numOfPlayers;
     }
     vector<Player*> playerList;
+    vector<AIPlayer*> AIList;
     cin.ignore();
 
     for (size_t i = 0; i < numOfPlayers; i++){
         string name;
         cout << "The name for player "<< (int)i+1 << ": ";
         getline(std::cin,name);
-        playerList.push_back(new Player (name , handSize));
+        //check the first four letters to see if the player is an AI
+        string tmp = "";
+        for (int i = 0; i < 4; i++)     tmp += tolower(name[i]);
+        if (tmp == "cpus"){
+            playerList.push_back(new Player (name , handSize, true));
+            AIList.push_back(new AIPlayer(true));
+            //need an index to memorize the relations
+            playerList[i]->setAIindex(AIList.size()-1);
+        }
+        else if(tmp == "cpul"){
+            playerList.push_back(new Player (name , handSize, true));
+            AIList.push_back(new AIPlayer(false));
+            //need an index to memorize the relations
+            playerList[i]->setAIindex(AIList.size()-1);
+        }
+        else{
+        playerList.push_back(new Player (name , handSize, false));
+        }
         std::vector<Tile*> tilesDrawn = myBag.drawTiles (handSize);
         playerList[i]->addTiles(tilesDrawn);
-
     }
 
    
