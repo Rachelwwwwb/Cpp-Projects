@@ -11,6 +11,7 @@ struct TrieNode {
   TrieNode *children[26]; // one child for each letter of the alphabet.
   int childrenSize(){
       int retval = 0;
+      if (this == NULL) return retval;
       for (int i = 0; i < 26; i++)
           if(this->children[i] != NULL) retval++;
 

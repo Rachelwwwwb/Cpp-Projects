@@ -103,7 +103,7 @@ int main(int argc, char* argv[]){
         std::vector<Tile*> tilesDrawn = myBag.drawTiles (handSize);
         playerList[i]->addTiles(tilesDrawn);
     }
-
+    //cerr << "line 106: Hand size is: "<< playerList[0]->getHandSize();
    
     size_t pass_num = 0;
     bool allpass = false; 
@@ -118,6 +118,7 @@ int main(int argc, char* argv[]){
             ifcontinue = false; 
             printer.printBoard(myBoard);
             printer.printHand(*playerList[i]);
+            //cerr << "line 121: Hand size is: "<< playerList[i]->getHandSize();
             
             string moveString = "";
             cout<< "It is Player "<< i+1 <<" " << playerList[i] -> getName() <<"'s turn" <<endl;
@@ -140,8 +141,13 @@ int main(int argc, char* argv[]){
                 }
                 else if(tmp == "cpul"){
                     theAI = new AIPlayer(false);
-                }    
-            oneMove = theAI->getMove(myBoard,myDic,*playerList[i],myTrie);
+                } 
+            //cerr << "line 145: Hand size is: "<< playerList[i]->getHandSize();
+            //here, the handsize become 0 for some reason
+            moveString = theAI->getMove(myBoard,myDic,*playerList[i],myTrie);
+            //cerr << "line 147: Hand size is: "<< playerList[i]->getHandSize();
+            Move*_move;
+            oneMove = _move->parseMove(moveString, *playerList[i]);
             delete theAI;
             }
 
@@ -207,8 +213,14 @@ int main(int argc, char* argv[]){
                }
 
                if (!ifcontinue){
+                //if it is an AI, print out the letter used
+                
+
                 printer.printBoard(myBoard);
                 printer.printHand(*playerList[i]);
+                if (playerList[i]->getAI())
+                cout << "Generating move...: "<<moveString<<endl;
+                
                 cout << "New words added: ";
                 place->printNewWord();
                 cout << endl;

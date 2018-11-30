@@ -155,6 +155,10 @@ public:
 	   Return value could be arbitrary for PASS moves. */
 	std::vector<Tile*> const & tileVector () const;
 
+	std::string getTileString() const{
+		return _tileString;
+	}
+
 
 	/* Executes this move, whichever type it is.
 	   This may throw exceptions; students: it's up to you to

@@ -80,9 +80,15 @@ public:
 
 	bool getAI() const;
 
-	size_t getAIindex() const;
+	int getHandSize(){
+		int retval = 0;
+		for (int i = 0; i < _tilesOnHand.size();i++)
+		retval ++;
 
-	void setAIindex(size_t index);
+		return retval;
+	}
+
+
 
 protected:
 	std::string _name;
@@ -90,7 +96,6 @@ protected:
 	std::vector<Tile*> _tilesOnHand;
 	int _score;
 	bool _isAI;
-	size_t _AIindex;
 
 };
 

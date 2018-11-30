@@ -133,14 +133,18 @@ using namespace std;
 	
 		//check if physically feasible
 		if(_player->hasTiles(_tileString,true)){
-			_tilestotake = _player->takeTiles(_tileString,true);}
+			_tilestotake = _player->takeTiles(_tileString,true);
+			//cerr << "move.cpp line 137: "<<_player->getHandTiles().size()<<endl;
+			}
 		else{
 			throw invalid_argument ("NO SUCH TILES"); 
 			return false;}
-
-
-		vector<pair<std::string, unsigned int>> words = board.getPlaceMoveResults(*this);
+		vector<pair<std::string, unsigned int>> words;
+		words = board.getPlaceMoveResults(*this);
+		//cerr << "move.cpp line 137: "<<_player->getHandTiles().size()<<endl;
+		//catch (exception &e)	{return false;}
 		if (words.size() < 1){
+			_player -> addTiles(_tilestotake);
 			throw invalid_argument ("NO WORD FORMED");
 			return false;
 		}
@@ -164,7 +168,7 @@ using namespace std;
 				truesize--;
 			}
 		}
-
+		_player -> addTiles(_tilestotake);
 		if (truesize == _player -> getMaxTiles()){
 			_newScore += 50;
 			}
@@ -176,9 +180,22 @@ using namespace std;
 
 	void PlaceMove::execute(Board & board, Bag & bag, Dictionary & dictionary){
 		if (this->allLegal(board, dictionary)){
+			/*cerr << "line 179(before taking, should be 7): ";
+			cerr << _player->getHandTiles().size()<<endl;*/
+			cerr << this->getTileString();
+			_player->takeTiles(_tileString,true);
+			
+			//_player->showHand();
+			/*cerr << "line 183(after taking, should be 3): ";
+			cerr << _player->getHandTiles().size()<<endl;*/
 			board.executePlaceMove(*this);
 			_toAdd = bag.drawTiles(truesize);
 			_player -> addTiles(_toAdd);
+			//_player->showHand();
+
+			/*
+			cerr << "line 189(after adding, should be 7): ";
+			cerr << _player->getHandTiles().size()<<endl;*/
 			_player -> addScore(_newScore);
 		}
 	}

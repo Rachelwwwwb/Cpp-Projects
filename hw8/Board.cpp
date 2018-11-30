@@ -398,7 +398,9 @@ using namespace std;
     void Board::checkHorizontal(const size_t startX, const size_t startY, size_t x, size_t y, string used, string word, string remaining,vector<PlaceMove*>& legalMoves,TrieSet& trie, TrieNode* checkPoint, Player* p){
         if (_board[startY][startX]->isOccupied()) return;
         if (x >= _columns)  return;
+        if (remaining.size() == 0)  return;
         if (x == startX && y == startY){
+            
             int leftMost = (int)x;
             while(leftMost-1 >= 0){
                 if (_board[y][leftMost-1]->isOccupied()){
@@ -414,7 +416,7 @@ using namespace std;
             checkPoint = trie.prefix(word); 
             if (checkPoint->childrenSize() == 0)    return;
         }
-
+        
         while (_board[y][x]->isOccupied()){
             char letterToCheck = toupper(_board[y][x]->getLetter());
             if (checkPoint->children[(int)letterToCheck - 'A'] == NULL) return;
@@ -422,37 +424,39 @@ using namespace std;
             x++;
             if(x >= _columns)   return;
         }
-
+        
         for (int i = 0; i < (int)remaining.size();i++){
-        char letterToAdd = toupper(remaining[i]);
+            char letterToAdd = toupper(remaining[i]);
             if (letterToAdd == '?'){
             for (int index = 0; index < 26; index++){
                 char letterUse = (char)index + 'A';
-                if (checkPoint->children[(int)letterUse - 'A'] == NULL) continue;
+                if (checkPoint->children[(int)letterUse - 'A'] != NULL){
                 //if it is feasible
-                used = used + letterToAdd + letterUse;
-                word += letterUse;
-                remaining = remaining.substr(0,i) + remaining.substr(i+1,remaining.size()-i-1);
+                TrieNode* newcheckPoint = checkPoint->children[(int)letterUse - 'A'];
+                string newUsed = used + letterToAdd + letterUse;
+                string newWord = word + letterUse;
+                string newremaining = remaining.substr(0,i) + remaining.substr(i+1,remaining.size()-i-1);
                 if (checkPoint->inSet){
-                        legalMoves.push_back(new PlaceMove(startX, startY, true, used,p));
+                        if (used != "")
+                        legalMoves.push_back(new PlaceMove(startX+1, startY+1, true, used,p));
                     }
-                if(remaining.size() == 0)   return;
-                this->checkHorizontal(startX,startY, x+1,y, used, word, remaining,legalMoves,trie,checkPoint,p);
+                this->checkHorizontal(startX,startY, x+1,y, newUsed, newWord, newremaining,legalMoves,trie,newcheckPoint,p);
+                }
             }
             }
             else{
-                if (checkPoint->children[(int)letterToAdd - 'A'] == NULL) return;
+                if (checkPoint->children[(int)letterToAdd - 'A'] != NULL){
                 
-                checkPoint = checkPoint->children[(int)letterToAdd - 'A'];
-                used += letterToAdd;
-                word += letterToAdd;
-                remaining = remaining.substr(0,i) + remaining.substr(i+1,remaining.size()-i-1);
+                TrieNode* newcheckPoint = checkPoint->children[(int)letterToAdd - 'A'];
+                string Newused = used + letterToAdd;
+                string Newword = word + letterToAdd;
+                string newremaining = remaining.substr(0,i) + remaining.substr(i+1,remaining.size()-i-1);
                 if(checkPoint->inSet){
-                    cout << "word" << endl;
-                    legalMoves.push_back(new PlaceMove(startX, startY, true, used,p));
+                    if (used != "")
+                    legalMoves.push_back(new PlaceMove(startX+1, startY+1, true, used,p));
                 }
-                if(remaining.size() == 0)   return;
-                this->checkHorizontal(startX,startY, x+1,y, used, word, remaining,legalMoves,trie,checkPoint,p);
+                this->checkHorizontal(startX,startY, x+1,y, Newused, Newword, newremaining,legalMoves,trie,newcheckPoint,p);
+                }
             }
         }
     }
@@ -461,7 +465,9 @@ using namespace std;
     void Board::checkVertical(const size_t startX, const size_t startY, size_t x, size_t y, string used, string word, string remaining,vector<PlaceMove*>& legalMoves,TrieSet& trie, TrieNode* checkPoint, Player* p){
         if (_board[startY][startX]->isOccupied()) return;
         if (y >= _rows)  return;
+        if (remaining.size() == 0)  return;
         if (x == startX && y == startY){
+            
             int upMost = (int)y;
             while(upMost-1 >= 0){
                 if (_board[upMost-1][x]->isOccupied()){
@@ -477,44 +483,48 @@ using namespace std;
             checkPoint = trie.prefix(word); 
             if (checkPoint->childrenSize() == 0)    return;
         }
-
+        
         while (_board[y][x]->isOccupied()){
             char letterToCheck = toupper(_board[y][x]->getLetter());
             if (checkPoint->children[(int)letterToCheck - 'A'] == NULL) return;
+            checkPoint = checkPoint->children[(int)letterToCheck - 'A'];
             word += letterToCheck;
             y++;
-            if(y >= _rows)   return;
+            if(y >= _columns)   return;
         }
-
+        
         for (int i = 0; i < (int)remaining.size();i++){
-        char letterToAdd = toupper(remaining[i]);
+            char letterToAdd = toupper(remaining[i]);
             if (letterToAdd == '?'){
             for (int index = 0; index < 26; index++){
                 char letterUse = (char)index + 'A';
-                if (checkPoint->children[(int)letterUse - 'A'] == NULL) continue;
+                if (checkPoint->children[(int)letterUse - 'A'] != NULL){
                 //if it is feasible
-                used = used + letterToAdd + letterUse;
-                word += letterUse;
-                remaining = remaining.substr(0,i) + remaining.substr(i+1,remaining.size()-i-1);
+                TrieNode* newcheckPoint = checkPoint->children[(int)letterUse - 'A'];
+                string newUsed = used + letterToAdd + letterUse;
+                string newWord = word + letterUse;
+                string newremaining = remaining.substr(0,i) + remaining.substr(i+1,remaining.size()-i-1);
                 if (checkPoint->inSet){
-                        legalMoves.push_back(new PlaceMove(startX, startY, false, used,p));
+                        if (used != "")
+                        legalMoves.push_back(new PlaceMove(startX+1, startY+1, false, used,p));
                     }
-                if(remaining.size() == 0)   return;
-                this->checkVertical(startX,startY, x,y+1, used, word, remaining,legalMoves,trie,checkPoint,p);
+                this->checkVertical(startX,startY, x,y+1, newUsed, newWord, newremaining,legalMoves,trie,newcheckPoint,p);
+                }
             }
             }
             else{
-                if (checkPoint->children[(int)letterToAdd - 'A'] == NULL) return;
-                checkPoint = checkPoint->children[(int)letterToAdd - 'A'];
-                used += letterToAdd;
-                word += letterToAdd;
-                remaining = remaining.substr(0,i) + remaining.substr(i+1,remaining.size()-i-1);
+                if (checkPoint->children[(int)letterToAdd - 'A'] != NULL){
+                
+                TrieNode* newcheckPoint = checkPoint->children[(int)letterToAdd - 'A'];
+                string Newused = used + letterToAdd;
+                string Newword = word + letterToAdd;
+                string newremaining = remaining.substr(0,i) + remaining.substr(i+1,remaining.size()-i-1);
                 if(checkPoint->inSet){
-                    cout << "word" << endl;
-                    legalMoves.push_back(new PlaceMove(startX, startY, false, used,p));
+                    if (used != "")
+                    legalMoves.push_back(new PlaceMove(startX+1, startY+1, false, used,p));
                 }
-                if(remaining.size() == 0)   return;
-                this->checkVertical(startX,startY, x,y+1, used, word, remaining,legalMoves,trie,checkPoint,p);
+                this->checkVertical(startX,startY, x,y+1, Newused, Newword, newremaining,legalMoves,trie,newcheckPoint,p);
+                }
             }
         }
     }
