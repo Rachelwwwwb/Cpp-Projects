@@ -108,7 +108,6 @@ using namespace std;
 		_player = p; 
 		_tileString = tileString;
 		_newScore = 0;
-		longestSize = 0;
 	}
 
 

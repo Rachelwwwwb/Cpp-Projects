@@ -84,7 +84,7 @@ public:
 
 	int getHandSize(){
 		int retval = 0;
-		for (int i = 0; i < _tilesOnHand.size();i++)
+		for (int i = 0; i < (int)_tilesOnHand.size();i++)
 		retval ++;
 
 		return retval;
