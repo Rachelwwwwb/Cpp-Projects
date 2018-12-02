@@ -23,8 +23,7 @@ AIPlayer::~AIPlayer(){
 }
 
     string AIPlayer::getMove(Board & board, Dictionary & dictionary, Player& p,TrieSet& trie){
-
-        //_permutations = this->getPermutations(p);        
+  
         //try all the squares and all the permutations on board
         //make sure at least the main word is legal
         //push them in the vector of legalMoves
@@ -39,26 +38,15 @@ AIPlayer::~AIPlayer(){
             board.checkVertical(x,y,x,y,"","", _lettersOnHand,legalMoves,trie,NULL,&p);
             }
         }
-        cerr << "line 43 in aiplayer: Hand size is: "<< p.getHandSize()<<endl;
 
         int highest_score = 0;
         size_t longest_word = 0;
         PlaceMove* highest = NULL;
         PlaceMove* longest = NULL;
-        //to be deleted       
-        bool found = false;
 
         for(int i = 0; i < (int)legalMoves.size(); i++){
             bool legal = true;
             try{
-                if(found == false && p.getHandSize() < 7){
-                //then the problem is the i-1th moves
-                 cerr << i << "th :" << legalMoves[i]->getTileString()<< " Hand size is: "<< p.getHandSize()<<endl;
-                 found = true;
-                }
-            if (i == 106856 - 1){
-                cout << "aha"<<endl;
-            }
             legalMoves[i]->allLegal(board,dictionary); 
             }
             catch(exception &e){
@@ -82,7 +70,6 @@ AIPlayer::~AIPlayer(){
             if (highest->getDirection())    direction = " - ";
             if (!highest->getDirection())   direction = " | ";
             retval = "PLACE" + direction+ to_string((int)highest->getStarty()) + " "+to_string((int)highest->getStartx()) + " " + highest->getTileString();
-            cout << retval;
             return retval;
             }
         }
@@ -92,7 +79,6 @@ AIPlayer::~AIPlayer(){
             if (longest->getDirection())    direction = " - ";
             if (!longest->getDirection())   direction = " | ";
             retval = "PLACE" +direction+ to_string((int)longest->getStarty()) + " "+to_string((int)longest->getStartx()) + " " + longest->getTileString();
-            cout << retval;
             return retval;
             }
         }

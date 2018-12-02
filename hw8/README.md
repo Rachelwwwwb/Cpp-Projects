@@ -1,13 +1,16 @@
-In this project, I am asked to write the game "scrabble".
-I did not create any extra file or any new class. I wrote the main in the scrabble.cpp,
-and compile it with Bag, board, dictionary, player, exceptions, move, square, rang and tile
-classes. 
-The bag class reads in from a file and construct a bag, where player can take tiles from.
-The board class need to get all the words added in one move and then add the letters on the board.
-The consolePrinter is just a print class.
-The dictionary class reads from a file and construct a dictionary.
-The exceptions throw excpetions.
-The move class has three subclasses, indicating three different kinds of moves, which include the pass, exchange and place.
-The player class store variables for each player.
-The sqaure and tile class store variables for each square and tile.
-The rang class prints colour for the board.
+In this project, I am asked to write the AI of "scrabble".
+I created an additional AIPlayer class, which is seperate from player class
+(not inheritence). It is used to deal with anything related with AI.
+In the main, if a detect that a player is an AI, I create a corresponding AI varaible for it,
+and find moves based on the player. There are a constructor, a destructor, a isCPUS and
+a getMove function. When finding the move with longest word/largest score, if there's
+a tie, I simply break the tie using the order of permutation. 
+if (legalMoves[i]->getNewScore() > highest_score)
+
+If it appears first, which means the letters it used are in the front, 
+then I will pick that one. 
+
+In the Trie class, I build a trie which used to find whether a certain permuatation
+of letters is a prefix of any word. If not, I will not need to preceed checking.
+It saves a lot of runtime. I include Trie.h and Trie.cpp under the same folder as
+my main function

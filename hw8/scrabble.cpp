@@ -22,8 +22,7 @@
 using namespace std;
 
 int main(int argc, char* argv[]){
-    //remember to change back!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ifstream config ("config.txt");
+    ifstream config (argv[1]);
     size_t handSize;
     string boardFile;
     string bagFile;
@@ -103,7 +102,6 @@ int main(int argc, char* argv[]){
         std::vector<Tile*> tilesDrawn = myBag.drawTiles (handSize);
         playerList[i]->addTiles(tilesDrawn);
     }
-    //cerr << "line 106: Hand size is: "<< playerList[0]->getHandSize();
    
     size_t pass_num = 0;
     bool allpass = false; 
@@ -118,8 +116,7 @@ int main(int argc, char* argv[]){
             ifcontinue = false; 
             printer.printBoard(myBoard);
             printer.printHand(*playerList[i]);
-            //cerr << "line 121: Hand size is: "<< playerList[i]->getHandSize();
-            
+
             string moveString = "";
             cout<< "It is Player "<< i+1 <<" " << playerList[i] -> getName() <<"'s turn" <<endl;
             
@@ -142,10 +139,7 @@ int main(int argc, char* argv[]){
                 else if(tmp == "cpul"){
                     theAI = new AIPlayer(false);
                 } 
-            //cerr << "line 145: Hand size is: "<< playerList[i]->getHandSize();
-            //here, the handsize become 0 for some reason
             moveString = theAI->getMove(myBoard,myDic,*playerList[i],myTrie);
-            //cerr << "line 147: Hand size is: "<< playerList[i]->getHandSize();
             Move*_move;
             oneMove = _move->parseMove(moveString, *playerList[i]);
             delete theAI;
@@ -172,7 +166,6 @@ int main(int argc, char* argv[]){
                 }
                 catch(invalid_argument &i){
                     ifcontinue = true;
-                    delete oneMove;
                     cout << "No such tile" << i.what() <<endl;
                 }
                 if (!ifcontinue){
@@ -213,11 +206,10 @@ int main(int argc, char* argv[]){
                }
 
                if (!ifcontinue){
-                //if it is an AI, print out the letter used
                 
-
                 printer.printBoard(myBoard);
                 printer.printHand(*playerList[i]);
+                //if it is an AI, print out the letter used
                 if (playerList[i]->getAI())
                 cout << "Generating move...: "<<moveString<<endl;
                 

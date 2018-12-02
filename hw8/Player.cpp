@@ -90,6 +90,39 @@ using namespace std;
 	return true;
         
     }
+	std::vector<Tile*> Player::getTiles (std::string const & move, bool resolveBlanks) const{
+		string movecpy = move;
+		std::vector<Tile*>_toGet;
+		for (size_t i = 0; i < movecpy.size();i++){
+			char actualUse;
+			if(movecpy[i] == '?' && resolveBlanks == true){
+					std::string firsthalf, secondhalf;
+					actualUse = movecpy[i+1];
+					firsthalf = movecpy.substr(0,(int)i+1);
+					if ((unsigned int)i+2 < movecpy.size()){
+					secondhalf = movecpy.substr((int)i+2, movecpy.size()-(int)i-2);
+					movecpy = firsthalf + secondhalf;}
+					else{
+						movecpy = firsthalf;
+					}
+			}
+		
+			size_t j = 0;
+			bool hasLetter = false;
+        	while (!hasLetter && j < _tilesOnHand.size()){
+                if(toupper(movecpy[i]) == toupper(_tilesOnHand[j]->getLetter())){
+					_toGet.push_back(_tilesOnHand[j]);
+                    hasLetter = true; 
+					if(resolveBlanks && movecpy[i] == '?'){
+					_toGet[_toGet.size()-1]->useAs(actualUse);
+					}
+				}
+                
+                j++;
+        	}
+		}
+	return _toGet;
+	}
 
 
 
@@ -137,6 +170,9 @@ using namespace std;
 	// Adds all the tiles in the vector to the player's hand.
 	void Player::addTiles (std::vector<Tile*> const & tilesToAdd){
 		for (size_t i = 0; i < tilesToAdd.size();i++){
+		if (tilesToAdd[i]->getLetter() == '?' && tilesToAdd[i]->getUse() != '?'){
+			tilesToAdd[i]->useAs('?');
+		}
 		_tilesOnHand.push_back(tilesToAdd[i]);
 		}
 	}

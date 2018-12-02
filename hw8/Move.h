@@ -165,6 +165,7 @@ public:
 	   decide (and document) what exactly it throws*/
 	void execute(Board & board, Bag & bag, Dictionary & dictionary);
 
+	//check to see if the move is legal
 	bool allLegal(Board & board,Dictionary & dictionary);
 
 	size_t getStartx() const;

@@ -65,6 +65,8 @@ public:
 	   The move string is assumed to have correct syntax.
 	*/
 	std::vector<Tile*> takeTiles (std::string const & move, bool resolveBlanks);
+		
+	std::vector<Tile*> getTiles (std::string const & move, bool resolveBlanks) const;
 
 	void addTiles (std::vector<Tile*> const & tilesToAdd);
 

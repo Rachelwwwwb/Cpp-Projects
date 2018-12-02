@@ -111,8 +111,11 @@ using namespace std;
                 isNextto = true;
             }
         
+        if (startX -1 >= _columns -1 || startX -1 >= _rows -1){
+            throw out_of_range ("OUT OF THE BOARD");
+        }
+
         if (_board[startY-1][startX-1]->isOccupied()){
-            m.getPlayer() -> addTiles(tileVector);
             throw out_of_range ("THE FIRST IS OCCUPIED");
         }
 
@@ -125,7 +128,6 @@ using namespace std;
             string word = "";
             if (horizontal){
                 if (startX-1+j > _columns-1){
-                    m.getPlayer() -> addTiles(tileVector);
                     throw out_of_range ("OUT OF THE BOARD");
                 }
                 while (_board[startY-1][startX-1+j]->isOccupied()){
@@ -169,7 +171,6 @@ using namespace std;
             //if vertical
             else{
                 if (startY-1+j > _rows-1){
-                     m.getPlayer() -> addTiles(tileVector);
                     throw out_of_range ("OUT OF THE BOARD");
                 }
                 while (_board[startY-1+j][startX-1]->isOccupied()){
@@ -232,7 +233,6 @@ using namespace std;
             size_t occupied  = 0;
             for (size_t i = 0; i < tileVector.size();i++){
                 if (startX-1+i+occupied > _columns-1){
-                    m.getPlayer() -> addTiles(tileVector);
                     throw out_of_range ("OUT OF THE BOARD");
                 }
                 while(_board[startY-1][startX-1+i+occupied]->isOccupied()){
@@ -250,13 +250,11 @@ using namespace std;
             }
             if (!_board[_y-1][_x-1]->isOccupied() && !startCorrect){
                 //throw exceptions
-                m.getPlayer() -> addTiles(tileVector);
                 throw domain_error ("START POSITION");
             }
 
             size_t tail = startX-1+tileVector.size()+occupied-1;
             if (tail > _columns-1) {
-                m.getPlayer() -> addTiles(tileVector);
                 throw out_of_range ("OUT OF THE BOARD");}
 
             for (size_t rightSide = 1; tail+rightSide <= _columns-1; rightSide++){
@@ -292,7 +290,6 @@ using namespace std;
             size_t occupied  = 0;
             for (size_t i = 0; i < tileVector.size();i++){
                  if (startY-1+i+occupied > _rows-1){
-                    m.getPlayer() -> addTiles(tileVector);
                     throw out_of_range ("OUT OF THE BOARD");
                 }
                 while(_board[startY-1+i+occupied][startX-1]->isOccupied()){
@@ -312,12 +309,10 @@ using namespace std;
             }
             if (!_board[_y-1][_x-1]->isOccupied() && !startCorrect){
                 //throw exceptions
-                m.getPlayer() -> addTiles(tileVector);
                 throw domain_error ("START POSITION");
             }
             size_t tail = startY-1+tileVector.size()+occupied-1;
             if (tail > _rows-1) {
-                m.getPlayer() -> addTiles(tileVector);
                 throw out_of_range ("OUT OF THE BOARD");}
 
             for (size_t below = 1; tail+below <= _rows-1; below++){
@@ -334,7 +329,6 @@ using namespace std;
             words.push_back(MainWord);}
         }
              if(!isNextto){
-                m.getPlayer() -> addTiles(tileVector);
                 throw range_error ("Not NEXT TO SOME LETTER");
             }
     return words;
@@ -358,7 +352,6 @@ using namespace std;
                 }
                 }
                 else{
-                    m.getPlayer() -> addTiles(tileVector);
                     throw out_of_range ("OUT OF BORDER");
                 }
             }
@@ -373,7 +366,6 @@ using namespace std;
                 }
                 }
                 else{
-                    m.getPlayer() -> addTiles(tileVector);
                     throw out_of_range ("OUT OF BORDER");
                 }
             }
