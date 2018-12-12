@@ -1,0 +1,6 @@
+HANDSIZE: 10
+TILES: scrabble_configs/standard-scrabble-setup/more-questions.txt
+BOARD: scrabble_configs/standard-scrabble-setup/standard-scrabble-board.txt
+SEED:    6
+DICTIONARY: scrabble_configs/standard-scrabble-setup/english-dictionary.txt
+INIT: scrabble_configs/init-files/INIT_1.txt

@@ -1,0 +1,1 @@
+/usr/bin/c++    -Wall -g3 -O0   CMakeFiles/trie_tests.dir/trie_checker.cpp.o CMakeFiles/trie_tests.dir/trie_tests.cpp.o  -o trie_tests ../testing_utils/libtesting_utils.a ../libhw8_trie.a /usr/lib/libgtest_main.a /usr/lib/libgtest.a -lpthread ../testing_utils/kwsys/libkwsys.a ../testing_utils/libperf/libperf.a 

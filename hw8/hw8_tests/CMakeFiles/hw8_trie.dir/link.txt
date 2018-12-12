@@ -1,0 +1,2 @@
+/usr/bin/ar qc libhw8_trie.a  "CMakeFiles/hw8_trie.dir/home/cs104/cs104~/hw-wenbeiwa/hw8/Trie.cpp.o"
+/usr/bin/ranlib libhw8_trie.a

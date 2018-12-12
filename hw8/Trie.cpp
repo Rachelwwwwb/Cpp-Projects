@@ -16,6 +16,7 @@ TrieSet::TrieSet (const std::string& Dictionary){
         dicStream >> word;
         this->insert(word);
     }
+    
 
   }
 
@@ -63,24 +64,61 @@ void TrieSet::insert (std::string input){
 }
 
 void TrieSet::remove (std::string input){
-    TrieNode* end = this->prefix(input);
-    if (end == NULL)    return;
-    for (int i = input.size()-1; i >= 0; i--){
-        input[i] = tolower(input[i]);
-        int num = (int) input[i] - 'a';
-        TrieNode* tmp = end->parent;
-        delete end->children[i];
-        tmp->children[num] = NULL;
+   /* Removes this string from the set.
+       Do nothing if the string is not already in the set. */
+ TrieNode* curr = head;
 
-        if (tmp == head)    return;
-        //check if the deleted word is the only children
-        for (int j = 0; j < 26; j++){
-            if (tmp->children[j] != NULL)   return;
-        }
-        //else if all the children of tmp is NULL
-        //continue deleting tmp
+ for(size_t i=0; i<input.length(); i++){
+  if(curr->children[toupper(input[i]) - 'A'] != nullptr){
+   curr = curr->children[toupper(input[i]) - 'A'];
+  }
+  else{
+   //if not in set, then do nothing
+   return;
+  }
+ }
+
+ //if input is a prefix of a longer string
+ for(int i=0; i<26; i++){
+  if(curr->children[i] != nullptr){
+   curr->inSet = false;
+   return;
+  }
+ }
+
+ TrieNode* end = curr;
+
+ //if it is not a prefix, then trace back untill it's parent has more than 1 child
+ while(curr != head && (curr == end || curr->inSet == false)){
+  for(int i=0; i<26; i++){
+   //if curr's parent has another child that's not curr
+   if(curr->parent->children[i] != nullptr && curr->parent->children[i] != curr){
+    //set parent's curr child to null
+    for(int j=0; j<26; j++){
+     if(curr->parent->children[j] == curr){
+      curr->parent->children[j] = nullptr;
+      break;
+     }
     }
-    
+    //just delete curr and then return
+    delete curr;
+    return;
+   }
+  }
+
+  //if curr is the only child, then delete curr, continue
+  TrieNode* temp = curr;
+  curr = curr->parent;
+
+  //set parent's curr child to null
+  for(int j=0; j<26; j++){
+   if(curr->children[j] == temp){
+    curr->children[j] = nullptr;
+    break;
+   }
+  }
+  delete temp;
+ }
 }
    
 

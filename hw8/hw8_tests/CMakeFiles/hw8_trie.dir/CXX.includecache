@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/cs104/cs104~/hw-wenbeiwa/hw8/Trie.cpp
+Trie.h
+/home/cs104/cs104~/hw-wenbeiwa/hw8/Trie.h
+iostream
+-
+string
+-
+queue
+-
+algorithm
+-
+fstream
+-
+
+/home/cs104/cs104~/hw-wenbeiwa/hw8/Trie.h
+string
+-
+iostream
+-
+
